@@ -29,7 +29,6 @@
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
           cache-dependency-path: ${{env.working-directory}}/package-lock.json
-      - run: cd ${{env.working-directory}}
       - run: pwd
       - run: npm install
       - run: npm ci
