@@ -1,6 +1,7 @@
 package com.example.JAQpApi.Config;
 
 import com.example.JAQpApi.Repository.UserRepo;
+import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,5 +45,13 @@ public class AppConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception
     {
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public MinioClient minioClient() {
+        return MinioClient.builder()
+                .endpoint("http://localhost:9000")
+                .credentials("minio", "miniominio")
+                .build();
     }
 }

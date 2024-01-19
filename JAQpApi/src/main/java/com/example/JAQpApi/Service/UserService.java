@@ -19,16 +19,11 @@ public class UserService
 {
 
     private final UserRepo userRepository;
-    private final TokenRepo tokenRepo;
-
-    private String StripToken(String _token)
-    {
-        return _token.substring(7);
-    }
+    private final AuthService authService;
 
     private User CheckAndGetUser(Integer _id, String _token) throws UserExeption
     {
-        User user = tokenRepo.findByToken(StripToken(_token)).orElseThrow(() -> new UserNotFoundExeption("")).getUser();
+        User user = authService.GetUserByToken(_token);
         if (!Objects.equals(user.getId(), _id))
         {
             throw new UserAccessDeniedExeption("Доступ запрещён");
@@ -43,7 +38,7 @@ public class UserService
         userRepository.save(user);
     }
 
-        public void SetSecondName(Integer _id, String _token, String _secondName) throws UserExeption
+    public void SetSecondName(Integer _id, String _token, String _secondName) throws UserExeption
     {
         User user = CheckAndGetUser(_id, _token);
         user.setSecondName(_secondName);

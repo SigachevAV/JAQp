@@ -6,6 +6,7 @@ import com.example.JAQpApi.Entity.Token.Token;
 import com.example.JAQpApi.Entity.Token.TokenType;
 import com.example.JAQpApi.Entity.User.Role;
 import com.example.JAQpApi.Entity.User.User;
+import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
 import com.example.JAQpApi.Repository.TokenRepo;
 import com.example.JAQpApi.Repository.UserRepo;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,17 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
+    private String StripToken(String _token)
+    {
+        return _token.substring(7);
+    }
+
+    public User GetUserByToken(String _token) throws UserNotFoundExeption
+    {
+        return  tokenRepository.findByToken(StripToken(_token)).orElseThrow(() -> new UserNotFoundExeption("")).getUser();
+    }
+
     public AuthenticationResponse register(AuthenticationRequest request) {
         User user = User.builder()
                 .username(request.getUsername())

@@ -49,7 +49,7 @@ public class UserController
     {
         try
         {
-            userService.SetFirstName(id, Authorization, second_name);
+            userService.SetSecondName(id, Authorization, second_name);
             return ResponseEntity.ok().body("OK");
         }
         catch (UserNotFoundExeption e)
@@ -72,7 +72,7 @@ public class UserController
     {
         try
         {
-            userService.SetFirstName(id, Authorization, last_name);
+            userService.SetLastName(id, Authorization, last_name);
             return ResponseEntity.ok().body("OK");
         }
         catch (UserNotFoundExeption e)
