@@ -2,6 +2,7 @@ package com.example.JAQpApi.Controller;
 
 import com.example.JAQpApi.DTO.AuthenticationRequest;
 import com.example.JAQpApi.DTO.AuthenticationResponse;
+import com.example.JAQpApi.DTO.RegistrationRequest;
 import com.example.JAQpApi.Service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody AuthenticationRequest request
+    public ResponseEntity<String> register(
+            @RequestBody RegistrationRequest request
     ) {
         return ResponseEntity.ok(authService.register(request));
     }

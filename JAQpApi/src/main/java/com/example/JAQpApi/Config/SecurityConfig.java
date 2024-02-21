@@ -1,49 +1,54 @@
 package com.example.JAQpApi.Config;
 
-import lombok.RequiredArgsConstructor;
+import com.example.JAQpApi.Config.JwtAuthEntryPoint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
-public class SecurityConfig
-{
-    private final AuthenticationProvider authenticationProvider;
-    private final JwtAuthFilter jwtAuthFilter;
+public class SecurityConfig {
 
-    private final LogoutHandler logoutHandler;
+    private JwtAuthEntryPoint authEntryPoint;
+    @Autowired
+    public SecurityConfig(JwtAuthEntryPoint authEntryPoint) {
+        this.authEntryPoint = authEntryPoint;
+    }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity https) throws Exception
-    {
-        https
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests()
-            .requestMatchers("/api/auth/**")
-            .permitAll()
-            .anyRequest()
-            .authenticated()
-            .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            .logout()
-            .logoutUrl("/api/v1/auth/logout")
-            .addLogoutHandler(logoutHandler)
-            .logoutSuccessHandler(((request, response, authentication) -> SecurityContextHolder.clearContext()));
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf( (csrf) -> csrf.disable() )
+            .exceptionHandling( (exceptionHandling) -> exceptionHandling.authenticationEntryPoint(authEntryPoint) )
+            .sessionManagement( (sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS) )
+            .authorizeHttpRequests((authorizeHttpRequests) ->
+                    authorizeHttpRequests
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/demo-controller/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/image/**").permitAll()
+                        .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
 
-        return https.build();
+    @Bean
+    public JWTAuthFilter jwtAuthFilter() {
+        return new JWTAuthFilter();
     }
 }
