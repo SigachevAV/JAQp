@@ -40,7 +40,7 @@ public class SecurityConfig {
                     authorizeHttpRequests
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/demo-controller/**").permitAll()
-                        .requestMatchers("/api/image/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/image/**").permitAll()
                         .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
