@@ -16,7 +16,7 @@ public interface TokenRepo extends JpaRepository<Token, Integer>
              select t from Token t inner join user u on t.user.id = u.id
              where u.id = :uid
            """)
-        List<Token> findAlLValidTokenByUserId(@Param("uid") Integer uid);
+        List<Token> findAllValidTokensByUserId(@Param("uid") Integer uid);
 
         Optional<Token> findByToken(String token);
 
