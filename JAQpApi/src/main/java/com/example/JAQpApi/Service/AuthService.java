@@ -4,6 +4,8 @@ package com.example.JAQpApi.Service;
 
 import com.example.JAQpApi.DTO.AuthenticationResponse;
 import com.example.JAQpApi.DTO.AuthenticationRequest;
+import com.example.JAQpApi.Entity.Token.Token;
+import com.example.JAQpApi.Entity.Token.TokenType;
 import com.example.JAQpApi.Entity.User.*;
 import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
 import com.example.JAQpApi.Repository.UserRepo;
@@ -35,7 +37,7 @@ public class AuthService {
     }
     public User GetUserByToken(String _token) throws UserNotFoundExeption
     {
-        return  tokenRepository.findByToken(StripToken(_token)).orElseThrow(() -> new UserNotFoundExeption("")).getUser();
+        return tokenRepository.findByToken(StripToken(_token)).orElseThrow(() -> new UserNotFoundExeption("")).getUser();
     }
     public String register(RegistrationRequest request) {
         User user = User.builder()
@@ -55,17 +57,20 @@ public class AuthService {
                         request.getUsername(), request.getPassword()
                 )
         );
+
+        var user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+
         var jwtToken = jwtGenerator.generateToken(authentication);
-        //revokeAllUserTokens(user);
-        //saveUserToken(user, jwtToken);
+        
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
         return AuthenticationResponse.builder()
                 .jwtToken(jwtToken)
                 .build();
     }
 
-    /*
     private void revokeAllUserTokens(User user){
-        var validUserTokens = tokenRepository.findAllValidTokensByUser(user.getId());
+        var validUserTokens = tokenRepository.findAllValidTokensByUserId(user.getId());
         if ( validUserTokens.isEmpty() ){
             return;
         }
@@ -87,5 +92,4 @@ public class AuthService {
                 .build();
         tokenRepository.save(token);
     }
-     */
 }
