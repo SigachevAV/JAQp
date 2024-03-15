@@ -77,7 +77,7 @@ public class UserService
         user.setFirstName(_request.getFirstName());
         user.setLastName(_request.getLastName());
         user.setSecondName(_request.getSecondName());
-        user.setBirthDate(_request.getBirthdate());
+        user.setBirthDate(_request.getBirthDate());
         userRepository.save(user);
     }
 }
