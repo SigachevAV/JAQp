@@ -8,6 +8,10 @@ import com.example.JAQpApi.Exeptions.ImageStorageException;
 import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
 import com.example.JAQpApi.Service.ImageService;
 import lombok.AllArgsConstructor;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 public class ImageController
 {
     private final ImageService imageService;
+
+    static final Logger logger =
+            LoggerFactory.getLogger(ImageController.class);
 
     @GetMapping("/{filename}")
     ResponseEntity GetImage(@PathVariable String filename)
@@ -51,7 +58,9 @@ public class ImageController
         }
         catch (ImageInvalidException e)
         {
-            return ResponseEntity.badRequest().body(e);
+
+            logger.debug("Неверный файл");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         catch (ImageException e)
         {
@@ -59,11 +68,15 @@ public class ImageController
         }
         catch (UserNotFoundExeption e)
         {
+
+            logger.debug("Неверный юзер");
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         catch (Exception e)
         {
-            return ResponseEntity.badRequest().build();
+            logger.debug("пиздец");
+            logger.debug(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
