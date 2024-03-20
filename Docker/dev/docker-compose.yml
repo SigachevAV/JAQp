@@ -15,6 +15,7 @@ services:
 #     - ./schema:/docker-entrypoint-initdb.d   
   JAQp_minio:
     image: minio/minio
+    container_name: JAQp_minio
     ports:
           - "9000:9000"
           - "9001:9001"

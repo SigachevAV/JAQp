@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class AppConfig {
 
     private final UserRepo userRepository;
+    private final MinioProperties minioProperties;
 
     @Bean
     public UserDetailsService userDetailsService()
@@ -50,8 +51,8 @@ public class AppConfig {
     @Bean
     public MinioClient minioClient() {
         return MinioClient.builder()
-                .endpoint("http://localhost:9000")
-                .credentials("minio", "miniominio")
+                .endpoint(minioProperties.getUrl())
+                .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
                 .build();
     }
 }

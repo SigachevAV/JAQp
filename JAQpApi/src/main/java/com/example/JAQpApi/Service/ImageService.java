@@ -1,5 +1,6 @@
 package com.example.JAQpApi.Service;
 
+import com.example.JAQpApi.Config.MinioProperties;
 import com.example.JAQpApi.Entity.ImageMetadata;
 import com.example.JAQpApi.Exeptions.ImageException;
 import com.example.JAQpApi.Exeptions.ImageInvalidException;
