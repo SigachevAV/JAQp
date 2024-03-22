@@ -1,5 +1,6 @@
 package com.example.JAQpApi.Controller;
 
+import com.example.JAQpApi.DTO.UserChangeDataRequest;
 import com.example.JAQpApi.DTO.UserGeneralResponse;
 import com.example.JAQpApi.Exeptions.UserAccessDeniedExeption;
 import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
@@ -96,6 +97,28 @@ public class UserController
         {
             userService.SetBirthDate(id, Authorization, birth_date);
             return ResponseEntity.ok().body("OK");
+        }
+        catch (UserNotFoundExeption e)
+        {
+            return ResponseEntity.notFound().build();
+        }
+        catch (UserAccessDeniedExeption e)
+        {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.badRequest().body("Error");
+        }
+    }
+
+    @PostMapping("/{id}/setting/general")
+    public ResponseEntity setGeneralInfo(@PathVariable Integer id, @RequestHeader String Authorization, @RequestBody UserChangeDataRequest request)
+    {
+        try
+        {
+            userService.SetGeneralData(id, Authorization, request);
+            return ResponseEntity.ok("ok");
         }
         catch (UserNotFoundExeption e)
         {

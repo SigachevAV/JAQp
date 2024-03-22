@@ -1,5 +1,6 @@
 package com.example.JAQpApi.Service;
 
+import com.example.JAQpApi.DTO.UserChangeDataRequest;
 import com.example.JAQpApi.DTO.UserGeneralResponse;
 import com.example.JAQpApi.Entity.User.User;
 import com.example.JAQpApi.Exeptions.UserAccessDeniedExeption;
@@ -68,5 +69,15 @@ public class UserService
             throw new UserNotFoundExeption("Пользователь не найден");
         }
         return UserGeneralResponse.FromUser(user.get());
+    }
+
+    public void SetGeneralData(Integer _id, String _token, UserChangeDataRequest _request) throws UserExeption
+    {
+        User user = CheckAndGetUser(_id, _token);
+        user.setFirstName(_request.getFirstName());
+        user.setLastName(_request.getLastName());
+        user.setSecondName(_request.getSecondName());
+        user.setBirthDate(_request.getBirthDate());
+        userRepository.save(user);
     }
 }
