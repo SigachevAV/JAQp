@@ -19,9 +19,9 @@
     </appender>
 
   <logger name="jdbc" level="OFF" />
-    
+
   <root level="info">
-    <appender-ref ref="STDOUT" />
+    <!-- <appender-ref ref="STDOUT" /> -->
     <appender-ref ref="FILE" />
   </root>
 </configuration>
