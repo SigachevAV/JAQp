@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse
+public class QuizData
 {
     private Integer id;
-    private String jwtToken;
-    private String username;
+    private String name;
 }

@@ -1,6 +1,7 @@
 package com.example.JAQpApi.Entity.User;
 
 import com.example.JAQpApi.Entity.ImageMetadata;
+import com.example.JAQpApi.Entity.Quiz;
 import com.example.JAQpApi.Entity.Token.Token;
 import jakarta.persistence.*;
 import lombok.*;
@@ -56,6 +57,9 @@ public class User implements UserDetails
 
     @OneToMany(mappedBy = "user")
     private List<ImageMetadata> imageMetadata;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Quiz> quizzes;
 
     @Override
     public boolean isAccountNonExpired()

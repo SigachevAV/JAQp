@@ -6,7 +6,6 @@ import com.example.JAQpApi.Entity.User.User;
 import com.example.JAQpApi.Exeptions.UserAccessDeniedExeption;
 import com.example.JAQpApi.Exeptions.UserExeption;
 import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
-import com.example.JAQpApi.Repository.TokenRepo;
 import com.example.JAQpApi.Repository.UserRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

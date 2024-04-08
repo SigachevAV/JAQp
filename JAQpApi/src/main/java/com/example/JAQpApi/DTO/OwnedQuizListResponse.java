@@ -5,13 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse
+public class OwnedQuizListResponse
 {
-    private Integer id;
-    private String jwtToken;
-    private String username;
+
+
+    private List<QuizData> quizDataList;
 }

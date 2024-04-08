@@ -1,11 +1,8 @@
 package com.example.JAQpApi.Service;
 
-import com.example.JAQpApi.Config.MinioProperties;
 import com.example.JAQpApi.Entity.ImageMetadata;
-import com.example.JAQpApi.Exeptions.ImageException;
-import com.example.JAQpApi.Exeptions.ImageInvalidException;
-import com.example.JAQpApi.Exeptions.ImageStorageException;
-import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
+import com.example.JAQpApi.Entity.User.User;
+import com.example.JAQpApi.Exeptions.*;
 import com.example.JAQpApi.Repository.ImageMetadataRepo;
 import io.minio.*;
 import lombok.AllArgsConstructor;
@@ -38,6 +35,32 @@ public class ImageService
             throw new ImageStorageException("Storage Access Error");
         }
         return file;
+    }
+
+    public void DeleteImage(String _filename, String _token) throws ImageException, UserExeption
+    {
+        ImageMetadata image = imageMetadataRepo.findById(_filename).orElseThrow(() -> new ImageNotFoundException("Image not found"));
+        User author = authService.GetUserByToken(_token);
+        if (!image.getUser().getId().equals(author.getId()))
+        {
+            throw new UserAccessDeniedExeption("");
+        }
+        try
+        {
+            minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(image.getName()).build());
+        }
+        catch (Exception e)
+        {
+            throw new ImageStorageException("");
+        }
+        try
+        {
+            imageMetadataRepo.delete(image);
+        }
+        catch (Exception e)
+        {
+            throw new ImageException("Изображение не найдено");
+        }
     }
 
     public static MediaType GetType(String _filename) throws ImageInvalidException
@@ -77,7 +100,8 @@ public class ImageService
         return fileName;
     }
 
-    private void createBucket() throws ImageStorageException {
+    private void createBucket() throws ImageStorageException
+    {
         try
         {
             boolean found = minioClient.bucketExists(BucketExistsArgs.builder()
@@ -96,12 +120,14 @@ public class ImageService
         }
     }
 
-    private String generateFileName(final MultipartFile _file) {
+    private String generateFileName(final MultipartFile _file)
+    {
         String extension = getExtension(_file);
         return UUID.randomUUID() + "." + extension;
     }
 
-    private String getExtension(final MultipartFile _file) {
+    private String getExtension(final MultipartFile _file)
+    {
         return _file.getOriginalFilename()
                 .substring(_file.getOriginalFilename().lastIndexOf(".") + 1);
     }

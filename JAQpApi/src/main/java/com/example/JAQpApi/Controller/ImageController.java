@@ -2,10 +2,7 @@ package com.example.JAQpApi.Controller;
 
 import com.example.JAQpApi.DTO.ImageUploadRequest;
 import com.example.JAQpApi.DTO.ImageUploadResponse;
-import com.example.JAQpApi.Exeptions.ImageException;
-import com.example.JAQpApi.Exeptions.ImageInvalidException;
-import com.example.JAQpApi.Exeptions.ImageStorageException;
-import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
+import com.example.JAQpApi.Exeptions.*;
 import com.example.JAQpApi.Service.ImageService;
 import lombok.AllArgsConstructor;
 
@@ -46,6 +43,29 @@ public class ImageController
         {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @DeleteMapping("/{filename}")
+    ResponseEntity DeliteImage(@PathVariable String filename, @RequestHeader String Authorization)
+    {
+        try
+        {
+            imageService.DeleteImage(filename, Authorization);
+            return ResponseEntity.ok("");
+        }
+        catch (UserExeption e)
+        {
+            return ResponseEntity.badRequest().body("Доступ запрещён");
+        }
+        catch (ImageNotFoundException e)
+        {
+            return ResponseEntity.notFound().build();
+        }
+        catch (ImageException e)
+        {
+            return ResponseEntity.internalServerError().body("");
+        }
+
     }
 
     @PostMapping("/upload")
