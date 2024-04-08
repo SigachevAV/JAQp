@@ -1,6 +1,6 @@
 package com.example.JAQpApi.Exeptions;
 
-public class UserAccessDeniedExeption extends UserExeption
+public class UserAccessDeniedExeption extends UserException
 {
     public UserAccessDeniedExeption(String message)
     {
