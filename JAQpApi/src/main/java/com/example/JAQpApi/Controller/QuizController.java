@@ -3,13 +3,12 @@ package com.example.JAQpApi.Controller;
 import com.example.JAQpApi.DTO.ImageUploadRequest;
 import com.example.JAQpApi.DTO.OwnedQuizListResponse;
 import com.example.JAQpApi.DTO.QuizCreateRequest;
-import com.example.JAQpApi.Exeptions.ImageException;
-import com.example.JAQpApi.Exeptions.ImageInvalidException;
-import com.example.JAQpApi.Exeptions.ImageStorageException;
-import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
+import com.example.JAQpApi.Exeptions.*;
 import com.example.JAQpApi.Service.QuizService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,12 +53,38 @@ public class QuizController
         return ResponseEntity.status(501).build();
     }
 
-    @GetMapping("/get_owned")
-    public ResponseEntity GetOwnedQuiz(@RequestHeader String Authorization)
+    @GetMapping("/get_questions/{id}")
+    public ResponseEntity GetQuestions(@PathVariable Integer id)
     {
         try
         {
-            return ResponseEntity.ok( quizService.GetOwnedQuiz(Authorization));
+            return ResponseEntity.ok(quizService.GetQuestionsOfQuiz(id));
+        }
+        catch (NotFoundException e)
+        {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity GetQuiz(@PathVariable Integer id)
+    {
+        try
+        {
+            return ResponseEntity.ok(quizService.GetQuiz(id));
+        }
+        catch (NotFoundException e)
+        {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/get_owned")
+    public ResponseEntity GetOwnedQuiz(@RequestHeader @Nullable String Authorization)
+    {
+        try
+        {
+            return ResponseEntity.ok(quizService.GetOwnedQuiz(Authorization));
         }
         catch (UserNotFoundExeption e)
         {

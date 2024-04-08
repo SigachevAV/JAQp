@@ -7,6 +7,7 @@ import com.example.JAQpApi.Repository.ImageMetadataRepo;
 import io.minio.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -22,6 +23,11 @@ public class ImageService
 
     private final AuthService authService;
     private final ImageMetadataRepo imageMetadataRepo;
+
+    public ImageMetadata GetImageMetadata(String _name) throws NotFoundException
+    {
+        return imageMetadataRepo.findById(_name).orElseThrow(()->new NotFoundException(""));
+    }
 
     public byte[] LoadImage(String _filename) throws ImageStorageException
     {

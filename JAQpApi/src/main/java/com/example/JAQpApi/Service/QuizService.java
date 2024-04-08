@@ -1,13 +1,11 @@
 package com.example.JAQpApi.Service;
 
-import com.example.JAQpApi.DTO.OwnedQuizListResponse;
-import com.example.JAQpApi.DTO.QuizCreateRequest;
-import com.example.JAQpApi.DTO.QuizCreateResponse;
-import com.example.JAQpApi.DTO.QuizData;
+import com.example.JAQpApi.DTO.*;
 import com.example.JAQpApi.Entity.ImageMetadata;
 import com.example.JAQpApi.Entity.Quiz;
 import com.example.JAQpApi.Entity.User.User;
 import com.example.JAQpApi.Exeptions.ImageException;
+import com.example.JAQpApi.Exeptions.NotFoundException;
 import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
 import com.example.JAQpApi.Repository.ImageMetadataRepo;
 import com.example.JAQpApi.Repository.QuizRepo;
@@ -16,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +26,16 @@ public class QuizService
 
     private final AuthService authService;
     private final ImageService imageService;
+
+    public Optional<Quiz> ValidateAccessAndGetQuiz(String _token, Integer _id) throws UserNotFoundExeption, NotFoundException
+    {
+        Quiz result = quizRepo.findById(_id).orElseThrow(() -> new NotFoundException("Quiz not found"));
+        if (Objects.equals(authService.GetUserByToken(_token).getId(), result.getOwner().getId()))
+        {
+            return Optional.of(result);
+        }
+        return Optional.empty();
+    }
 
     public QuizCreateResponse CreateQuiz(String _token, QuizCreateRequest _request) throws UserNotFoundExeption, ImageException
     {
@@ -39,7 +49,7 @@ public class QuizService
                 .build();
         quiz = quizRepo.save(quiz);
         return QuizCreateResponse.builder()
-                .quizId(quiz.getId())
+                .quizId(quiz.getQuiz_id())
                 .description(quiz.getDescription())
                 .imageName(quiz.getThumnail().getName())
                 .name(quiz.getName())
@@ -53,10 +63,26 @@ public class QuizService
         for (Quiz quiz : quizRepo.findAllByOwner(owner))
         {
             list.add(QuizData.builder()
-                    .id(quiz.getId())
+                    .id(quiz.getQuiz_id())
                     .name(quiz.getName())
                     .build());
         }
         return new OwnedQuizListResponse(list);
+    }
+
+    public QuestionsOfQuizResponse GetQuestionsOfQuiz(Integer _id) throws NotFoundException
+    {
+        return QuestionsOfQuizResponse.toDto(quizRepo.findById(_id).orElseThrow(() -> new NotFoundException("")).getQuestions());
+    }
+
+    public QuizResponse GetQuiz(Integer _id) throws NotFoundException
+    {
+        Quiz quiz = quizRepo.findById(_id).orElseThrow(() -> new NotFoundException(""));
+        return QuizResponse.builder()
+                .description(quiz.getDescription())
+                .id(quiz.getQuiz_id())
+                .image_name(quiz.getThumnail().getName())
+                .name(quiz.getName())
+                .build();
     }
 }
