@@ -7,6 +7,14 @@ import com.example.JAQpApi.Exeptions.ImageInvalidException;
 import com.example.JAQpApi.Exeptions.ImageStorageException;
 import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
 import com.example.JAQpApi.Service.ImageService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 
 
@@ -19,6 +27,10 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/image")
+@Tag(
+    name = "Image related endpoints",
+    description = "Endpoint-ы, ответственные за чтение и запись изображений"
+)
 public class ImageController
 {
     private final ImageService imageService;
@@ -27,6 +39,35 @@ public class ImageController
             LoggerFactory.getLogger(ImageController.class);
 
     @GetMapping("/{filename}")
+    @Operation(
+        description = "Публичный доступ?",
+        summary = "Чтение изображения",
+        requestBody = @RequestBody(
+            required = true,
+            description = "URI изображения"
+        ),
+        responses = {
+            @ApiResponse(
+                description = "Запрошенное изображение",
+                responseCode = "200",
+                content = @Content(
+                    mediaType = "image/*"
+                )
+            ),
+            @ApiResponse(
+                description = "Internal Server Error",
+                responseCode = "500"
+            ),
+            @ApiResponse(
+                description = "Invalid format",
+                responseCode = "400"
+            ),
+            @ApiResponse(
+                description = "Unexpected Error",
+                responseCode = "400"
+            )
+        }
+    )
     ResponseEntity GetImage(@PathVariable String filename)
     {
         try
@@ -49,6 +90,44 @@ public class ImageController
     }
 
     @PostMapping("/upload")
+    @Operation(
+        description = "Публичный доступ?",
+        summary = "Запись изображения",
+        parameters = {
+            @Parameter(
+                
+            )
+        },
+        responses = {
+            @ApiResponse(
+                description = "Изображение записано",
+                responseCode = "200",
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(
+                        implementation = ImageUploadResponse.class
+                    )
+                )
+            ),
+            @ApiResponse(
+                description = "Internal Server Error",
+                responseCode = "500"
+            ),
+            @ApiResponse(
+                description = "Неверный файл",
+                responseCode = "400"
+            ),
+            @ApiResponse(
+                description = "Unexpected Error",
+                responseCode = "400"
+            ),
+            @ApiResponse(
+                description = "User Not Found",
+                responseCode = "400"
+            )
+            
+        }
+    )
     ResponseEntity UploadImage(@ModelAttribute ImageUploadRequest file, @RequestHeader String Authorization)
     {
         try
@@ -68,13 +147,12 @@ public class ImageController
         }
         catch (UserNotFoundExeption e)
         {
-
             logger.debug("Неверный юзер");
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         catch (Exception e)
         {
-            logger.debug("пиздец");
+            logger.debug("Unexpected error");
             logger.debug(e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -7,6 +7,12 @@ import com.example.JAQpApi.Exeptions.UserAlreadyExists;
 import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
 import com.example.JAQpApi.Service.AuthService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -21,6 +27,7 @@ import org.slf4j.MDC;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Аутентификационные endpoint-ы")
 public class AuthController {
 
     
@@ -30,6 +37,28 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
+    @Operation(
+        description = "Регистрация пользователя",
+        summary = "Регистрация",
+        requestBody = @RequestBody(
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(
+                    implementation = RegistrationRequest.class
+                )
+            )
+        ),
+        responses = {
+            @ApiResponse(
+                description = "Успешная регистрация",
+                responseCode = "200"
+            ),
+            @ApiResponse(
+                description = "Пользователь с таким ником уже существует",
+                responseCode = "400"
+            )
+        }
+    )
     public ResponseEntity<String> register(
             @RequestBody RegistrationRequest request
     ) {
@@ -57,6 +86,28 @@ public class AuthController {
         return resp;
     }
     @PostMapping("/authenticate")
+    @Operation(
+        description = "Авторизация пользователя с получением токена",
+        summary = " Аутентификация/Авторизация",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Успешная регитрация",
+                content = {
+                    @Content(
+                        mediaType = "application/json",
+                        schema = @Schema(
+                            implementation = AuthenticationResponse.class)
+                    )
+                }
+            ),
+            @ApiResponse(
+                responseCode = "400",
+                description = "Пользователь с таким логином не существует"
+            )
+
+        }
+    )
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
     ) {
