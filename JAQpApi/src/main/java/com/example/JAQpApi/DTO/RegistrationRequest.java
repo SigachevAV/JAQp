@@ -1,5 +1,7 @@
 package com.example.JAQpApi.DTO;
 
+import com.example.JAQpApi.Entity.User.Role;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,4 +14,5 @@ import lombok.NoArgsConstructor;
 public class RegistrationRequest {
     private String username;
     private String password;
+    private Role role;
 }

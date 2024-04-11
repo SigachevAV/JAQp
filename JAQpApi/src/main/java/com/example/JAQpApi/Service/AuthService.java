@@ -7,18 +7,25 @@ import com.example.JAQpApi.DTO.AuthenticationRequest;
 import com.example.JAQpApi.Entity.Token.Token;
 import com.example.JAQpApi.Entity.Token.TokenType;
 import com.example.JAQpApi.Entity.User.*;
+import com.example.JAQpApi.Exeptions.UserAlreadyExists;
 import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
 import com.example.JAQpApi.Repository.UserRepo;
 import com.example.JAQpApi.Repository.TokenRepo;
 import com.example.JAQpApi.DTO.RegistrationRequest;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Optional;
+
+import javax.naming.AuthenticationException;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +34,8 @@ public class AuthService {
     private final UserRepo userRepository;
     private final TokenRepo tokenRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JWTService jwtGenerator;
+    private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
-
 
     private String StripToken(String _token)
     {
@@ -39,28 +45,35 @@ public class AuthService {
     {
         return tokenRepository.findByToken(StripToken(_token)).orElseThrow(() -> new UserNotFoundExeption("")).getUser();
     }
-    public String register(RegistrationRequest request) {
-        User user = User.builder()
+
+    public void register(RegistrationRequest request) throws UserAlreadyExists {
+            Optional<User> user = userRepository.findByUsername(request.getUsername());
+            if ( user.isPresent() ){
+                throw new UserAlreadyExists("User with this username already exists");
+            }
+            else{
+            User userToSave = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .role(request.getRole())
                 .createdAt(new Timestamp(System.currentTimeMillis()))
                 .build();
-        var usrTmp = userRepository.save(user);
 
-        return "User registered";
+                userRepository.save(userToSave);
+            }
+        
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request) throws UserNotFoundExeption, AuthenticationException {
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(), request.getPassword()
                 )
         );
+        var user = userRepository.findByUsername( ((UserDetails)authentication.getPrincipal()).getUsername() ).orElseThrow( ()-> new UserNotFoundExeption("User not found") );
 
-        var user = userRepository.findByUsername(request.getUsername()).orElseThrow();
-
-        var jwtToken = jwtGenerator.generateToken(authentication);
+        var jwtToken = jwtService.generateToken(user);
         
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);

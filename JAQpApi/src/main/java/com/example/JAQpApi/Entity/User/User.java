@@ -1,11 +1,15 @@
 package com.example.JAQpApi.Entity.User;
 
 import com.example.JAQpApi.Entity.ImageMetadata;
+import com.example.JAQpApi.Entity.Quiz.Quiz;
 import com.example.JAQpApi.Entity.Token.Token;
 import jakarta.persistence.*;
 import lombok.*;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import org.springframework.data.relational.core.sql.SQL;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
@@ -30,7 +34,13 @@ public class User implements UserDetails
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Enumerated(EnumType.ORDINAL)
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
+
+    @OneToMany(mappedBy = "user")
+    private List<Quiz> quizList;
+
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Column(nullable = false)
@@ -50,9 +60,6 @@ public class User implements UserDetails
 
     @Column
     private OffsetDateTime birthDate;
-
-    @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
 
     @OneToMany(mappedBy = "user")
     private List<ImageMetadata> imageMetadata;
@@ -84,13 +91,8 @@ public class User implements UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()
     {
-        return List.of(new SimpleGrantedAuthority("User"));
+        return role.getAuthorities();
     }
 
-//    @OneToMany(mappedBy = "owner")
-//    private Set<Quez> ownerQuezes;
-//
-//    @OneToMany(mappedBy = "user")
-//    private Set<UserAnswer> userUserAnswers;
 
 }

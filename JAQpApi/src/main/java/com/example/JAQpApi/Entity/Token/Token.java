@@ -18,6 +18,7 @@ public class Token
     @GeneratedValue
     private int id;
 
+    @Column(unique = true)
     private String token;
 
     @Enumerated(EnumType.STRING)
@@ -27,7 +28,7 @@ public class Token
 
     private boolean revoked;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    public User user;
 }

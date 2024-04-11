@@ -1,6 +1,6 @@
 package com.example.JAQpApi.Exeptions;
 
-public class UserNotFoundExeption extends UserExeption
+public class UserNotFoundExeption extends UserException
 {
     public UserNotFoundExeption(String message)
     {

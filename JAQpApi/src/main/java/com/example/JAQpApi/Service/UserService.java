@@ -4,7 +4,7 @@ import com.example.JAQpApi.DTO.UserChangeDataRequest;
 import com.example.JAQpApi.DTO.UserGeneralResponse;
 import com.example.JAQpApi.Entity.User.User;
 import com.example.JAQpApi.Exeptions.UserAccessDeniedExeption;
-import com.example.JAQpApi.Exeptions.UserExeption;
+import com.example.JAQpApi.Exeptions.UserException;
 import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
 import com.example.JAQpApi.Repository.TokenRepo;
 import com.example.JAQpApi.Repository.UserRepo;
@@ -22,7 +22,7 @@ public class UserService
     private final UserRepo userRepository;
     private final AuthService authService;
 
-    private User CheckAndGetUser(Integer _id, String _token) throws UserExeption
+    private User CheckAndGetUser(Integer _id, String _token) throws UserException
     {
         User user = authService.GetUserByToken(_token);
         if (!Objects.equals(user.getId(), _id))
@@ -32,28 +32,28 @@ public class UserService
         return user;
     }
 
-    public void SetLastName(Integer _id, String _token, String _lastName) throws UserExeption
+    public void SetLastName(Integer _id, String _token, String _lastName) throws UserException
     {
         User user = CheckAndGetUser(_id, _token);
         user.setLastName(_lastName);
         userRepository.save(user);
     }
 
-    public void SetSecondName(Integer _id, String _token, String _secondName) throws UserExeption
+    public void SetSecondName(Integer _id, String _token, String _secondName) throws UserException
     {
         User user = CheckAndGetUser(_id, _token);
         user.setSecondName(_secondName);
         userRepository.save(user);
     }
 
-    public void SetFirstName(Integer _id, String _token, String _firstName) throws UserExeption
+    public void SetFirstName(Integer _id, String _token, String _firstName) throws UserException
     {
         User user = CheckAndGetUser(_id, _token);
         user.setFirstName(_firstName);
         userRepository.save(user);
     }
 
-    public void SetBirthDate(Integer _id, String _token, OffsetDateTime _birthDate) throws UserExeption
+    public void SetBirthDate(Integer _id, String _token, OffsetDateTime _birthDate) throws UserException
     {
         User user = CheckAndGetUser(_id, _token);
         user.setBirthDate(_birthDate);
@@ -61,7 +61,7 @@ public class UserService
     }
 
 
-    public UserGeneralResponse GetUserGeneralInfo(int _id) throws UserExeption
+    public UserGeneralResponse GetUserGeneralInfo(int _id) throws UserException
     {
         Optional<User> user = userRepository.findById(_id);
         if (user.isEmpty())
@@ -71,7 +71,7 @@ public class UserService
         return UserGeneralResponse.FromUser(user.get());
     }
 
-    public void SetGeneralData(Integer _id, String _token, UserChangeDataRequest _request) throws UserExeption
+    public void SetGeneralData(Integer _id, String _token, UserChangeDataRequest _request) throws UserException
     {
         User user = CheckAndGetUser(_id, _token);
         user.setFirstName(_request.getFirstName());
