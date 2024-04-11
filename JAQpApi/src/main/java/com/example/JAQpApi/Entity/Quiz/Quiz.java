@@ -7,6 +7,7 @@ import org.hibernate.type.SqlTypes;
 
 import com.example.JAQpApi.Entity.User.User;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -29,6 +30,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Setter
+@Hidden
 public class Quiz {
 
 

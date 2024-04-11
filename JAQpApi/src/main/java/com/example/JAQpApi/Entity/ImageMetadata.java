@@ -1,6 +1,8 @@
 package com.example.JAQpApi.Entity;
 
 import com.example.JAQpApi.Entity.User.User;
+
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.*;
 import org.checkerframework.common.aliasing.qual.Unique;
@@ -12,6 +14,7 @@ import org.checkerframework.common.aliasing.qual.Unique;
 @Builder
 @Getter
 @Setter
+@Hidden
 public class ImageMetadata
 {
     @Column
