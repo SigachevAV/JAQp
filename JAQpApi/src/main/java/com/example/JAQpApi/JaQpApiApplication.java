@@ -46,14 +46,6 @@ public class JaQpApiApplication
 					.build();
 			System.out.println("Admin token: " + service.authenticate(adminAuth).getJwtToken());
 
-			Question q = new Question().builder()
-			                           .answerNum(1)
-									   .text("qwe??")
-									   .answers(Arrays.asList("q", "w", "e"))
-									   .build();
-			Quiz quiz = new Quiz().builder().name("quiz with questions").questions(JsonUtil.convertObjectToJson(q)).build();
-			quizService.addQuiz("admin", quiz);
-
 			/*
 			var manager = RegistrationRequest.builder()
 					.username("manager2")

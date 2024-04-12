@@ -15,9 +15,12 @@ import com.example.JAQpApi.Entity.User.User;
 import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
 import com.example.JAQpApi.Service.AuthService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/demo-controller")
+@SecurityRequirement( name = "bearerAuth" )
 public class DemoController {
 
     private final AuthService authService;

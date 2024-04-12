@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +18,31 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/admin")
 @PreAuthorize("hasRole('ADMIN')")
-@Tag( name = "Admin endpoints")
+@Tag( 
+    name = "Admin endpoint-ы",
+    description = "Ednpoint-ы для пользователей с правами доступа Admin"
+    )
+@SecurityRequirement( name = "bearerAuth" )
+@ApiResponses(
+    {
+        @ApiResponse(
+            responseCode = "200",
+            description = "admin ok"
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "UNAUTHENTICATED"
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "UNAUTHORIZED"
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Unexpected Server Error"
+        )
+    }
+)
 public class AdminController {
 
     @GetMapping

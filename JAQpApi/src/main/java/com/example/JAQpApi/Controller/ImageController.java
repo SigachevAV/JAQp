@@ -10,11 +10,14 @@ import com.example.JAQpApi.Service.ImageService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 
 
@@ -31,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
     name = "Image related endpoints",
     description = "Endpoint-ы, ответственные за чтение и запись изображений"
 )
+@SecurityRequirement( name = "bearerAuth" )
 public class ImageController
 {
     private final ImageService imageService;
@@ -42,8 +46,8 @@ public class ImageController
     @Operation(
         description = "Публичный доступ?",
         summary = "Чтение изображения",
-        requestBody = @RequestBody(
-            required = true,
+        parameters = @Parameter(
+            in = ParameterIn.PATH,
             description = "URI изображения"
         ),
         responses = {
@@ -51,20 +55,28 @@ public class ImageController
                 description = "Запрошенное изображение",
                 responseCode = "200",
                 content = @Content(
-                    mediaType = "image/*"
+                    mediaType = "multipart/form-data"
                 )
             ),
             @ApiResponse(
                 description = "Internal Server Error",
-                responseCode = "500"
+                responseCode = "500",
+                content = @Content(
+                    mediaType = "text/plain",
+                    examples = @ExampleObject(
+                        value = "Unexpected error."
+                    )
+                )
             ),
             @ApiResponse(
                 description = "Invalid format",
-                responseCode = "400"
-            ),
-            @ApiResponse(
-                description = "Unexpected Error",
-                responseCode = "400"
+                responseCode = "400",
+                content = @Content(
+                    mediaType = "text/plain",
+                    examples = @ExampleObject(
+                        value = "Неверный формат изображения."
+                    )
+                )
             )
         }
     )
@@ -95,9 +107,21 @@ public class ImageController
         summary = "Запись изображения",
         parameters = {
             @Parameter(
-                
+                name = "Authorization",
+                in = ParameterIn.HEADER,
+                description = "JWT auth token"
             )
         },
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            required = true,
+            description = "Image",
+            content = @Content(
+                mediaType = "image/*",
+                schema = @Schema(
+                    implementation = ImageUploadRequest.class
+                )
+            )
+        ),
         responses = {
             @ApiResponse(
                 description = "Изображение записано",
@@ -111,21 +135,25 @@ public class ImageController
             ),
             @ApiResponse(
                 description = "Internal Server Error",
-                responseCode = "500"
+                responseCode = "500",
+                content = @Content(
+                mediaType = "text/plain"
+                )
             ),
             @ApiResponse(
                 description = "Неверный файл",
-                responseCode = "400"
+                responseCode = "400",
+                content = @Content(
+                mediaType = "text/plain"
+                )
             ),
             @ApiResponse(
-                description = "Unexpected Error",
-                responseCode = "400"
-            ),
-            @ApiResponse(
-                description = "User Not Found",
-                responseCode = "400"
+                description = "UNAUTHENTICATED",
+                responseCode = "401",
+                content = @Content(
+                    mediaType = "text/plain"
+                )
             )
-            
         }
     )
     ResponseEntity UploadImage(@ModelAttribute ImageUploadRequest file, @RequestHeader String Authorization)

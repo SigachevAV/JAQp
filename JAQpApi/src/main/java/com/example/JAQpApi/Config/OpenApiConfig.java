@@ -19,12 +19,12 @@ import io.swagger.v3.oas.annotations.servers.Server;
             url = "http://localhost:8080"
 
         )
-    },
-    security = {
-        @SecurityRequirement(
-            name = "bearerAuth"
-        )
     }
+    // security = {
+    //     @SecurityRequirement(
+    //         name = "bearerAuth"
+    //     )
+    // }
 )
 @SecurityScheme(
     name = "bearerAuth",

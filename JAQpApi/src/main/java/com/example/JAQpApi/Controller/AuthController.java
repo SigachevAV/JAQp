@@ -9,11 +9,14 @@ import com.example.JAQpApi.Service.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+//import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +41,9 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(
-        description = "Регистрация пользователя",
+        description = "Регистрация пользователя. ",
         summary = "Регистрация",
-        requestBody = @RequestBody(
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(
                 mediaType = "application/json",
                 schema = @Schema(
@@ -51,11 +54,27 @@ public class AuthController {
         responses = {
             @ApiResponse(
                 description = "Успешная регистрация",
-                responseCode = "200"
+                responseCode = "200",
+                content = @Content(
+                    mediaType = "text/plain",
+                    examples = @ExampleObject(
+                        value = "Пользователь зарегистрирован"
+                    )
+                )
             ),
             @ApiResponse(
+                content = @Content(
+                    mediaType = "text/plain"
+                ),
                 description = "Пользователь с таким ником уже существует",
                 responseCode = "400"
+            ),
+            @ApiResponse(
+                content = @Content(
+                    mediaType = "text/plain"
+                ),
+                description = "Unexpected Error",
+                responseCode = "500"
             )
         }
     )
@@ -102,8 +121,18 @@ public class AuthController {
                 }
             ),
             @ApiResponse(
+                content = @Content(
+                    mediaType = "text/plain"
+                ),
                 responseCode = "400",
                 description = "Пользователь с таким логином не существует"
+            ),
+            @ApiResponse(
+                content = @Content(
+                    mediaType = "text/plain"
+                ),
+                description = "Unexpected Error",
+                responseCode = "500"
             )
 
         }
