@@ -4,9 +4,9 @@ import com.example.JAQpApi.DTO.*;
 import com.example.JAQpApi.Entity.ImageMetadata;
 import com.example.JAQpApi.Entity.Quiz;
 import com.example.JAQpApi.Entity.User.User;
-import com.example.JAQpApi.Exeptions.ImageException;
-import com.example.JAQpApi.Exeptions.NotFoundException;
-import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
+import com.example.JAQpApi.Exceptions.AccessDeniedException;
+import com.example.JAQpApi.Exceptions.ImageException;
+import com.example.JAQpApi.Exceptions.NotFoundException;
 import com.example.JAQpApi.Repository.ImageMetadataRepo;
 import com.example.JAQpApi.Repository.QuizRepo;
 import lombok.RequiredArgsConstructor;
@@ -27,17 +27,17 @@ public class QuizService
     private final AuthService authService;
     private final ImageService imageService;
 
-    public Optional<Quiz> ValidateAccessAndGetQuiz(String _token, Integer _id) throws UserNotFoundExeption, NotFoundException
+    public Optional<Quiz> ValidateAccessAndGetQuiz(String _token, Integer _id) throws AccessDeniedException, NotFoundException
     {
         Quiz result = quizRepo.findById(_id).orElseThrow(() -> new NotFoundException("Quiz not found"));
         if (Objects.equals(authService.GetUserByToken(_token).getId(), result.getOwner().getId()))
         {
             return Optional.of(result);
         }
-        return Optional.empty();
+        throw new AccessDeniedException("Access denied");
     }
 
-    public QuizCreateResponse CreateQuiz(String _token, QuizCreateRequest _request) throws UserNotFoundExeption, ImageException
+    public QuizCreateResponse CreateQuiz(String _token, QuizCreateRequest _request) throws NotFoundException, ImageException
     {
         ImageMetadata thumnail = imageMetadataRepo.findById(imageService.UploadFile(_request.getThumnail(), _token)).orElseThrow(() -> new ImageException("Unknown image error"));
         User owner = authService.GetUserByToken(_token);
@@ -56,7 +56,7 @@ public class QuizService
                 .build();
     }
 
-    public OwnedQuizListResponse GetOwnedQuiz(String _token) throws UserNotFoundExeption
+    public OwnedQuizListResponse GetOwnedQuiz(String _token) throws NotFoundException
     {
         User owner = authService.GetUserByToken(_token);
         List<QuizData> list = new ArrayList<>();

@@ -2,12 +2,11 @@ package com.example.JAQpApi.Service;
 
 import com.example.JAQpApi.Entity.ImageMetadata;
 import com.example.JAQpApi.Entity.User.User;
-import com.example.JAQpApi.Exeptions.*;
+import com.example.JAQpApi.Exceptions.*;
 import com.example.JAQpApi.Repository.ImageMetadataRepo;
 import io.minio.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -43,13 +42,13 @@ public class ImageService
         return file;
     }
 
-    public void DeleteImage(String _filename, String _token) throws ImageException, UserExeption
+    public void DeleteImage(String _filename, String _token) throws ImageException, NotFoundException, AccessDeniedException
     {
-        ImageMetadata image = imageMetadataRepo.findById(_filename).orElseThrow(() -> new ImageNotFoundException("Image not found"));
+        ImageMetadata image = imageMetadataRepo.findById(_filename).orElseThrow(() -> new NotFoundException("Image", _filename));
         User author = authService.GetUserByToken(_token);
         if (!image.getUser().getId().equals(author.getId()))
         {
-            throw new UserAccessDeniedExeption("");
+            throw new AccessDeniedException("Image with name="+_filename, "U are not owner");
         }
         try
         {
@@ -65,7 +64,7 @@ public class ImageService
         }
         catch (Exception e)
         {
-            throw new ImageException("Изображение не найдено");
+            throw new NotFoundException("Изображение не найдено");
         }
     }
 
@@ -93,13 +92,14 @@ public class ImageService
         }
     }
 
-    public String UploadFile(MultipartFile _file, String _token) throws ImageException, UserNotFoundExeption
+    public String UploadFile(MultipartFile _file, String _token) throws ImageException, NotFoundException
     {
         createBucket();
         if(_file.isEmpty() || _file.getOriginalFilename() == null)
         {
             throw new ImageInvalidException("Invalid file");
         }
+        GetType(_file.getOriginalFilename());
         String fileName = generateFileName(_file);
         saveImage(_file, fileName);
         imageMetadataRepo.save(ImageMetadata.builder().name(fileName).user(authService.GetUserByToken(_token)).build());
@@ -156,6 +156,44 @@ public class ImageService
         catch (Exception e)
         {
             throw new ImageStorageException("Storage Access Error");
+        }
+    }
+
+    public ImageMetadataWithName HandleNullableImageRequest(String _token ,MultipartFile _request) throws NotFoundException, ImageException
+    {
+        if (_request != null)
+        {
+            return new ImageMetadataWithName(imageMetadataRepo.findById(UploadFile(_request, _token)).orElseThrow(() -> new NotFoundException("")));
+        }
+        return new ImageMetadataWithName();
+    }
+
+    public static class ImageMetadataWithName
+    {
+
+        private final ImageMetadata imageMetadata;
+        private final String imageName;
+
+        public ImageMetadata getImageMetadata()
+        {
+            return imageMetadata;
+        }
+
+        public String getImageName()
+        {
+            return imageName;
+        }
+
+        public ImageMetadataWithName(ImageMetadata imageMetadata)
+        {
+            this.imageMetadata = imageMetadata;
+            this.imageName = imageMetadata.getName();
+        }
+
+        public ImageMetadataWithName()
+        {
+            this.imageMetadata = null;
+            this.imageName = null;
         }
     }
 }

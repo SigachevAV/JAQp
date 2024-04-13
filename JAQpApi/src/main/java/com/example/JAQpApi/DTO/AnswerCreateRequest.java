@@ -4,14 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
-public class QuestionCreateResponse
+public class AnswerCreateRequest
 {
-    private Integer id;
+    private Integer question_id;
     private String content;
-    private String imageName;
+    private MultipartFile image;
+    private Boolean is_right;
 }

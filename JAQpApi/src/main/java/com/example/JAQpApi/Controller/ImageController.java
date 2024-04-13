@@ -2,13 +2,11 @@ package com.example.JAQpApi.Controller;
 
 import com.example.JAQpApi.DTO.ImageUploadRequest;
 import com.example.JAQpApi.DTO.ImageUploadResponse;
-import com.example.JAQpApi.Exeptions.*;
+import com.example.JAQpApi.Exceptions.*;
 import com.example.JAQpApi.Service.ImageService;
 import lombok.AllArgsConstructor;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,83 +18,23 @@ public class ImageController
 {
     private final ImageService imageService;
 
-    static final Logger logger =
-            LoggerFactory.getLogger(ImageController.class);
-
     @GetMapping("/{filename}")
-    ResponseEntity GetImage(@PathVariable String filename)
+    ResponseEntity GetImage(@PathVariable String filename) throws ImageStorageException, ImageInvalidException
     {
-        try
-        {
-            byte[] file = imageService.LoadImage(filename);
-            return ResponseEntity.ok().contentType(ImageService.GetType(filename)).body(file);
-        }
-        catch (ImageStorageException e)
-        {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
-        catch (ImageInvalidException e)
-        {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        catch (Exception e)
-        {
-            return ResponseEntity.badRequest().build();
-        }
+        byte[] file = imageService.LoadImage(filename);
+        return ResponseEntity.ok().contentType(ImageService.GetType(filename)).body(file);
     }
 
     @DeleteMapping("/{filename}")
-    ResponseEntity DeliteImage(@PathVariable String filename, @RequestHeader String Authorization)
+    ResponseEntity<String> DeleteImage(@PathVariable String filename, @RequestHeader String Authorization) throws AccessDeniedException, ImageException, NotFoundException
     {
-        try
-        {
-            imageService.DeleteImage(filename, Authorization);
-            return ResponseEntity.ok("");
-        }
-        catch (UserExeption e)
-        {
-            return ResponseEntity.badRequest().body("Доступ запрещён");
-        }
-        catch (ImageNotFoundException e)
-        {
-            return ResponseEntity.notFound().build();
-        }
-        catch (ImageException e)
-        {
-            return ResponseEntity.internalServerError().body("");
-        }
-
+        imageService.DeleteImage(filename, Authorization);
+        return ResponseEntity.ok("Image with name " + filename + " deleted");
     }
 
     @PostMapping("/upload")
-    ResponseEntity UploadImage(@ModelAttribute ImageUploadRequest file, @RequestHeader String Authorization)
+    ImageUploadResponse UploadImage(@ModelAttribute ImageUploadRequest file, @RequestHeader String Authorization) throws ImageException, NotFoundException
     {
-        try
-        {
-            ImageUploadResponse response =  new ImageUploadResponse(imageService.UploadFile(file.getFile(), Authorization));
-            return ResponseEntity.ok().body(response);
-        }
-        catch (ImageInvalidException e)
-        {
-
-            logger.debug("Неверный файл");
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        catch (ImageException e)
-        {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
-        catch (UserNotFoundExeption e)
-        {
-
-            logger.debug("Неверный юзер");
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        catch (Exception e)
-        {
-            logger.debug("пиздец");
-            logger.debug(e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return new ImageUploadResponse(imageService.UploadFile(file.getFile(), Authorization));
     }
 }

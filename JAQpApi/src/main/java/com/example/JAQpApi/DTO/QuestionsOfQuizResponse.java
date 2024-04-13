@@ -1,13 +1,11 @@
 package com.example.JAQpApi.DTO;
 
 import com.example.JAQpApi.Entity.Question;
-import com.example.JAQpApi.Entity.Quiz;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.lang.ref.PhantomReference;
 import java.util.ArrayList;
 import java.util.List;
 

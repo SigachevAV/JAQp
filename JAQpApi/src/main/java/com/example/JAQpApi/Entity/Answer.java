@@ -4,23 +4,15 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.checkerframework.common.aliasing.qual.Unique;
 
-import java.util.List;
-
 @Entity
-@Table(name = "question")
+@Table(name = "answer")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Question
+public class Answer
 {
-    @Id
-    @Unique
-    @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer question_Id;
-
     @Column
     private String description;
 
@@ -28,9 +20,17 @@ public class Question
     @JoinColumn(name = "imageMetadata_name")
     private ImageMetadata image;
 
-    @ManyToOne
-    private Quiz quiz;
+    @Id
+    @Unique
+    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @OneToMany(mappedBy = "question")
-    private List<Answer> answerList;
+    @ManyToOne
+    private Question question;
+
+    @Column
+    private boolean is_right;
 }
+
+

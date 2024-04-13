@@ -1,17 +1,19 @@
 package com.example.JAQpApi.DTO;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
-public class QuestionCreateResponse
+public class AnswerCreateResponse
 {
     private Integer id;
+    private String image;
     private String content;
-    private String imageName;
+    private Boolean is_right;
 }
