@@ -10,9 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuizCreateRequest
+public class AnswerCreateRequest
 {
-    private String name;
-    private MultipartFile thumnail;
-    private String description;
+    private Integer question_id;
+    private String content;
+    private MultipartFile image;
+    private Boolean is_right;
 }

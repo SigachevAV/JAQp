@@ -6,13 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class QuizCreateResponse
+public class QuestionCreateResponse
 {
-    private Integer quizId;
-    private String description;
+    private Integer id;
+    private String content;
     private String imageName;
-    private String name;
 }

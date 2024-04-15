@@ -64,6 +64,9 @@ public class User implements UserDetails
     @OneToMany(mappedBy = "user")
     private List<ImageMetadata> imageMetadata;
 
+    @OneToMany(mappedBy = "owner")
+    private List<Quiz> quizzes;
+
     @Override
     public boolean isAccountNonExpired()
     {

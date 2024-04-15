@@ -22,5 +22,5 @@ public interface QuizRepo extends JpaRepository<Quiz, Integer> {
     """)
   List<Quiz> findAllQuizByUserId(Integer id);
     
-    
-}
+  List<Quiz> findAllByOwner(User owner);
+

@@ -1,4 +1,4 @@
-package com.example.JAQpApi.Exeptions;
+package com.example.JAQpApi.Exceptions;
 
 public class ImageInvalidException extends ImageException
 {

@@ -1,11 +1,8 @@
 package com.example.JAQpApi.Service;
 
-import com.example.JAQpApi.Config.MinioProperties;
 import com.example.JAQpApi.Entity.ImageMetadata;
-import com.example.JAQpApi.Exeptions.ImageException;
-import com.example.JAQpApi.Exeptions.ImageInvalidException;
-import com.example.JAQpApi.Exeptions.ImageStorageException;
-import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
+import com.example.JAQpApi.Entity.User.User;
+import com.example.JAQpApi.Exceptions.*;
 import com.example.JAQpApi.Repository.ImageMetadataRepo;
 import io.minio.*;
 import lombok.AllArgsConstructor;
@@ -26,6 +23,11 @@ public class ImageService
     private final AuthService authService;
     private final ImageMetadataRepo imageMetadataRepo;
 
+    public ImageMetadata GetImageMetadata(String _name) throws NotFoundException
+    {
+        return imageMetadataRepo.findById(_name).orElseThrow(()->new NotFoundException(""));
+    }
+
     public byte[] LoadImage(String _filename) throws ImageStorageException
     {
         byte[] file;
@@ -38,6 +40,32 @@ public class ImageService
             throw new ImageStorageException("Storage Access Error");
         }
         return file;
+    }
+
+    public void DeleteImage(String _filename, String _token) throws ImageException, NotFoundException, AccessDeniedException
+    {
+        ImageMetadata image = imageMetadataRepo.findById(_filename).orElseThrow(() -> new NotFoundException("Image", _filename));
+        User author = authService.GetUserByToken(_token);
+        if (!image.getUser().getId().equals(author.getId()))
+        {
+            throw new AccessDeniedException("Image with name="+_filename, "U are not owner");
+        }
+        try
+        {
+            minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(image.getName()).build());
+        }
+        catch (Exception e)
+        {
+            throw new ImageStorageException("");
+        }
+        try
+        {
+            imageMetadataRepo.delete(image);
+        }
+        catch (Exception e)
+        {
+            throw new NotFoundException("Изображение не найдено");
+        }
     }
 
     public static MediaType GetType(String _filename) throws ImageInvalidException
@@ -64,20 +92,22 @@ public class ImageService
         }
     }
 
-    public String UploadFile(MultipartFile _file, String _token) throws ImageException, UserNotFoundExeption
+    public String UploadFile(MultipartFile _file, String _token) throws ImageException, NotFoundException
     {
         createBucket();
         if(_file.isEmpty() || _file.getOriginalFilename() == null)
         {
             throw new ImageInvalidException("Invalid file");
         }
+        GetType(_file.getOriginalFilename());
         String fileName = generateFileName(_file);
         saveImage(_file, fileName);
         imageMetadataRepo.save(ImageMetadata.builder().name(fileName).user(authService.GetUserByToken(_token)).build());
         return fileName;
     }
 
-    private void createBucket() throws ImageStorageException {
+    private void createBucket() throws ImageStorageException
+    {
         try
         {
             boolean found = minioClient.bucketExists(BucketExistsArgs.builder()
@@ -96,12 +126,14 @@ public class ImageService
         }
     }
 
-    private String generateFileName(final MultipartFile _file) {
+    private String generateFileName(final MultipartFile _file)
+    {
         String extension = getExtension(_file);
         return UUID.randomUUID() + "." + extension;
     }
 
-    private String getExtension(final MultipartFile _file) {
+    private String getExtension(final MultipartFile _file)
+    {
         return _file.getOriginalFilename()
                 .substring(_file.getOriginalFilename().lastIndexOf(".") + 1);
     }
@@ -124,6 +156,44 @@ public class ImageService
         catch (Exception e)
         {
             throw new ImageStorageException("Storage Access Error");
+        }
+    }
+
+    public ImageMetadataWithName HandleNullableImageRequest(String _token ,MultipartFile _request) throws NotFoundException, ImageException
+    {
+        if (_request != null)
+        {
+            return new ImageMetadataWithName(imageMetadataRepo.findById(UploadFile(_request, _token)).orElseThrow(() -> new NotFoundException("")));
+        }
+        return new ImageMetadataWithName();
+    }
+
+    public static class ImageMetadataWithName
+    {
+
+        private final ImageMetadata imageMetadata;
+        private final String imageName;
+
+        public ImageMetadata getImageMetadata()
+        {
+            return imageMetadata;
+        }
+
+        public String getImageName()
+        {
+            return imageName;
+        }
+
+        public ImageMetadataWithName(ImageMetadata imageMetadata)
+        {
+            this.imageMetadata = imageMetadata;
+            this.imageName = imageMetadata.getName();
+        }
+
+        public ImageMetadataWithName()
+        {
+            this.imageMetadata = null;
+            this.imageName = null;
         }
     }
 }

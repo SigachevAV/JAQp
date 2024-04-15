@@ -7,8 +7,9 @@ import com.example.JAQpApi.DTO.AuthenticationRequest;
 import com.example.JAQpApi.Entity.Token.Token;
 import com.example.JAQpApi.Entity.Token.TokenType;
 import com.example.JAQpApi.Entity.User.*;
-import com.example.JAQpApi.Exeptions.UserAlreadyExists;
+// import com.example.JAQpApi.Exeptions.UserAlreadyExists;
 import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
+import com.example.JAQpApi.Exceptions.NotFoundException;
 import com.example.JAQpApi.Repository.UserRepo;
 import com.example.JAQpApi.Repository.TokenRepo;
 import com.example.JAQpApi.DTO.RegistrationRequest;
@@ -41,9 +42,9 @@ public class AuthService {
     {
         return _token.substring(7);
     }
-    public User GetUserByToken(String _token) throws UserNotFoundExeption
+    public User GetUserByToken(String _token) throws NotFoundException
     {
-        return tokenRepository.findByToken(StripToken(_token)).orElseThrow(() -> new UserNotFoundExeption("")).getUser();
+        return tokenRepository.findByToken(StripToken(_token)).orElseThrow(() -> new NotFoundException("User", "token="+_token)).getUser();
     }
 
     public void register(RegistrationRequest request) throws UserAlreadyExists {
@@ -80,6 +81,7 @@ public class AuthService {
         return AuthenticationResponse.builder()
                 .jwtToken(jwtToken)
                 .id(user.getId())
+                .username(user.getUsername())
                 .build();
     }
 

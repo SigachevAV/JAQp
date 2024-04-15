@@ -2,10 +2,7 @@ package com.example.JAQpApi.Controller;
 
 import com.example.JAQpApi.DTO.ImageUploadRequest;
 import com.example.JAQpApi.DTO.ImageUploadResponse;
-import com.example.JAQpApi.Exeptions.ImageException;
-import com.example.JAQpApi.Exeptions.ImageInvalidException;
-import com.example.JAQpApi.Exeptions.ImageStorageException;
-import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
+import com.example.JAQpApi.Exceptions.*;
 import com.example.JAQpApi.Service.ImageService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,8 +18,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,9 +33,6 @@ import org.springframework.web.bind.annotation.*;
 public class ImageController
 {
     private final ImageService imageService;
-
-    static final Logger logger =
-            LoggerFactory.getLogger(ImageController.class);
 
     @GetMapping("/{filename}")
     @Operation(
@@ -82,23 +74,15 @@ public class ImageController
     )
     ResponseEntity GetImage(@PathVariable String filename)
     {
-        try
-        {
-            byte[] file = imageService.LoadImage(filename);
-            return ResponseEntity.ok().contentType(ImageService.GetType(filename)).body(file);
-        }
-        catch (ImageStorageException e)
-        {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
-        catch (ImageInvalidException e)
-        {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        catch (Exception e)
-        {
-            return ResponseEntity.badRequest().build();
-        }
+        byte[] file = imageService.LoadImage(filename);
+        return ResponseEntity.ok().contentType(ImageService.GetType(filename)).body(file);
+    }
+
+    @DeleteMapping("/{filename}")
+    ResponseEntity<String> DeleteImage(@PathVariable String filename, @RequestHeader String Authorization) throws AccessDeniedException, ImageException, NotFoundException
+    {
+        imageService.DeleteImage(filename, Authorization);
+        return ResponseEntity.ok("Image with name " + filename + " deleted");
     }
 
     @PostMapping("/upload")

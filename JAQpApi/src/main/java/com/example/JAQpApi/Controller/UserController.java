@@ -2,9 +2,8 @@ package com.example.JAQpApi.Controller;
 
 import com.example.JAQpApi.DTO.UserChangeDataRequest;
 import com.example.JAQpApi.DTO.UserGeneralResponse;
-import com.example.JAQpApi.Exeptions.UserAccessDeniedExeption;
-import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
-import com.example.JAQpApi.Repository.UserRepo;
+import com.example.JAQpApi.Exceptions.AccessDeniedException;
+import com.example.JAQpApi.Exceptions.NotFoundException;
 import com.example.JAQpApi.Service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,10 +16,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.OffsetDateTime;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8080")
@@ -57,9 +54,6 @@ import java.time.OffsetDateTime;
 )
 public class UserController
 {
-    @Autowired
-    private UserRepo usersRepo;
-
     private final UserService userService;
 
     @PostMapping("/{id}/setting/first_name")
@@ -214,23 +208,8 @@ public class UserController
     )
     public ResponseEntity setGeneralInfo(@PathVariable Integer id, @RequestHeader String Authorization, @RequestBody UserChangeDataRequest request)
     {
-        try
-        {
-            userService.SetGeneralData(id, Authorization, request);
-            return ResponseEntity.ok("ok");
-        }
-        catch (UserNotFoundExeption e)
-        {
-            return ResponseEntity.notFound().build();
-        }
-        catch (UserAccessDeniedExeption e)
-        {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        catch (Exception e)
-        {
-            return ResponseEntity.badRequest().body("Error");
-        }
+        userService.SetGeneralData(id, Authorization, request);
+        return ResponseEntity.ok("ok");
     }
 
     @GetMapping("/{id}")
@@ -251,18 +230,6 @@ public class UserController
     )
     public ResponseEntity getUser(@PathVariable Integer id)
     {
-        try
-        {
-            UserGeneralResponse user = userService.GetUserGeneralInfo(id);
-            return ResponseEntity.ok().body(user);
-        }
-        catch (UserNotFoundExeption e)
-        {
-            return ResponseEntity.notFound().build();
-        }
-        catch (Exception e)
-        {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return userService.GetUserGeneralInfo(id);
     }
 }
