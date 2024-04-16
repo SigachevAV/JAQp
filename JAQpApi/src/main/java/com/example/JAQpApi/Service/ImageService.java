@@ -1,6 +1,6 @@
 package com.example.JAQpApi.Service;
 
-import com.example.JAQpApi.Entity.ImageMetadata;
+import com.example.JAQpApi.Entity.Quiz.ImageMetadata;
 import com.example.JAQpApi.Entity.User.User;
 import com.example.JAQpApi.Exceptions.*;
 import com.example.JAQpApi.Repository.ImageMetadataRepo;

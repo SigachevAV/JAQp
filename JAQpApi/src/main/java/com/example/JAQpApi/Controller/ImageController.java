@@ -17,7 +17,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 public class ImageController
 {
     private final ImageService imageService;
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @GetMapping("/{filename}")
     @Operation(
@@ -72,7 +74,7 @@ public class ImageController
             )
         }
     )
-    ResponseEntity GetImage(@PathVariable String filename)
+    ResponseEntity GetImage(@PathVariable String filename) throws ImageStorageException, ImageInvalidException
     {
         byte[] file = imageService.LoadImage(filename);
         return ResponseEntity.ok().contentType(ImageService.GetType(filename)).body(file);
@@ -157,7 +159,7 @@ public class ImageController
         {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
-        catch (UserNotFoundExeption e)
+        catch (NotFoundException e)
         {
             logger.debug("Неверный юзер");
             return ResponseEntity.badRequest().body(e.getMessage());

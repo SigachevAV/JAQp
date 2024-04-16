@@ -1,6 +1,6 @@
 package com.example.JAQpApi.DTO;
 
-import com.example.JAQpApi.Entity.Question;
+import com.example.JAQpApi.Entity.Quiz.Question;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

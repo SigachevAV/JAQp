@@ -3,8 +3,8 @@ package com.example.JAQpApi.Controller;
 import com.example.JAQpApi.DTO.AuthenticationRequest;
 import com.example.JAQpApi.DTO.AuthenticationResponse;
 import com.example.JAQpApi.DTO.RegistrationRequest;
-import com.example.JAQpApi.Exeptions.UserAlreadyExists;
-import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
+import com.example.JAQpApi.Exceptions.NotFoundException;
+import com.example.JAQpApi.Exceptions.UserAlreadyExists;
 import com.example.JAQpApi.Service.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -149,7 +149,7 @@ public class AuthController {
             logger.info("User authenticated | id = " + authResp.getId() + " | token = " + authResp.getJwtToken() );
             resp = ResponseEntity.ok(authResp);
         }
-        catch(UserNotFoundExeption e){
+        catch(NotFoundException e){
             resp = new ResponseEntity<>(new AuthenticationResponse("No user with this username"), HttpStatus.BAD_REQUEST);
             logger.warn(resp.toString());
         }

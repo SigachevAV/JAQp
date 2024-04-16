@@ -56,128 +56,6 @@ public class UserController
 {
     private final UserService userService;
 
-    @PostMapping("/{id}/setting/first_name")
-    @Operation(
-        summary = "Задание имени",
-        description = "Задание имени пользователю, с заданным id. Требуется совпадение авторизационных данных или наличие прав Администратора",
-        parameters = {
-            @Parameter(
-                description = "JWT auth token",
-                name = "Authorization",
-                in = ParameterIn.HEADER,
-                required = true
-            )
-        },
-        responses = @ApiResponse(
-            description = "Изменение прошло успешно",
-            responseCode = "200",
-            content = @Content(
-                mediaType = "text/plain"
-            )
-        )
-    )
-    public ResponseEntity setFirstName(@PathVariable Integer id, @RequestHeader String Authorization, @RequestParam String first_name)
-    {
-        try
-        {
-            userService.SetFirstName(id, Authorization, first_name);
-            return ResponseEntity.ok().body("OK");
-        }
-        catch (UserNotFoundExeption e)
-        {
-            return ResponseEntity.notFound().build();
-        }
-        catch (UserAccessDeniedExeption e)
-        {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        catch (Exception e)
-        {
-            return ResponseEntity.internalServerError().body("Error");
-        }
-    }
-    @Operation(
-        summary = "Задание фамилии",
-        description = "Задание фамилии пользователю, с заданным id. Требуется совпадение авторизационных данных или наличие прав Администратора",
-        parameters = {
-            @Parameter(
-                description = "JWT auth token",
-                name = "Authorization",
-                in = ParameterIn.HEADER,
-                required = true
-            )
-        },
-        responses = @ApiResponse(
-            description = "Изменение прошло успешно",
-            responseCode = "200",
-            content = @Content(
-                mediaType = "text/plain"
-            )
-        )
-    )
-    @PostMapping("/{id}/setting/second_name")
-    public ResponseEntity setSecondName(@PathVariable Integer id, @RequestHeader String Authorization, @RequestParam String second_name)
-    {
-        try
-        {
-            userService.SetSecondName(id, Authorization, second_name);
-            return ResponseEntity.ok().body("OK");
-        }
-        catch (UserNotFoundExeption e)
-        {
-            return ResponseEntity.notFound().build();
-        }
-        catch (UserAccessDeniedExeption e)
-        {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        catch (Exception e)
-        {
-            return ResponseEntity.badRequest().body("Error");
-        }
-    }
-
-    @Operation(
-        summary = "Задание даты рождения",
-        description = "Задание даты рождения пользователю, с заданным id. Требуется совпадение авторизационных данных или наличие прав Администратора",
-        parameters = {
-            @Parameter(
-                description = "JWT auth token",
-                name = "Authorization",
-                in = ParameterIn.HEADER,
-                required = true
-            )
-        },
-        responses = @ApiResponse(
-            description = "Изменение прошло успешно",
-            responseCode = "200",
-            content = @Content(
-                mediaType = "text/plain"
-            )
-        )
-    )
-    @PostMapping("/{id}/setting/birth_date")
-    public ResponseEntity setBirthDate(@PathVariable Integer id, @RequestHeader String Authorization, @RequestParam OffsetDateTime birth_date)
-    {
-        try
-        {
-            userService.SetBirthDate(id, Authorization, birth_date);
-            return ResponseEntity.ok().body("OK");
-        }
-        catch (UserNotFoundExeption e)
-        {
-            return ResponseEntity.notFound().build();
-        }
-        catch (UserAccessDeniedExeption e)
-        {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        catch (Exception e)
-        {
-            return ResponseEntity.badRequest().body("Error");
-        }
-    }
-
     @PostMapping("/{id}/setting/general")
     @Operation(
         summary = "Задание значений профиля",
@@ -206,7 +84,7 @@ public class UserController
             )
         )
     )
-    public ResponseEntity setGeneralInfo(@PathVariable Integer id, @RequestHeader String Authorization, @RequestBody UserChangeDataRequest request)
+    public ResponseEntity setGeneralInfo(@PathVariable Integer id, @RequestHeader String Authorization, @RequestBody UserChangeDataRequest request) throws NotFoundException, AccessDeniedException
     {
         userService.SetGeneralData(id, Authorization, request);
         return ResponseEntity.ok("ok");
@@ -228,8 +106,8 @@ public class UserController
             )
         )
     )
-    public ResponseEntity getUser(@PathVariable Integer id)
+    public ResponseEntity getUser(@PathVariable Integer id) throws NotFoundException
     {
-        return userService.GetUserGeneralInfo(id);
+        return ResponseEntity.ok().body(userService.GetUserGeneralInfo(id));
     }
 }

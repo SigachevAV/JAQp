@@ -4,7 +4,7 @@ import com.example.JAQpApi.DTO.ImageUploadRequest;
 import com.example.JAQpApi.DTO.OwnedQuizListResponse;
 import com.example.JAQpApi.DTO.QuizCreateRequest;
 import com.example.JAQpApi.DTO.QuizResponse;
-import com.example.JAQpApi.Exeptions.*;
+import com.example.JAQpApi.Exceptions.*;
 import com.example.JAQpApi.Service.QuizService;
 
 import io.swagger.v3.oas.annotations.Operation;

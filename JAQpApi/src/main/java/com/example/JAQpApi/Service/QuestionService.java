@@ -2,8 +2,8 @@ package com.example.JAQpApi.Service;
 
 import com.example.JAQpApi.DTO.QuestionCreateRequest;
 import com.example.JAQpApi.DTO.QuestionCreateResponse;
-import com.example.JAQpApi.Entity.Question;
-import com.example.JAQpApi.Entity.Quiz;
+import com.example.JAQpApi.Entity.Quiz.Question;
+import com.example.JAQpApi.Entity.Quiz.Quiz;
 import com.example.JAQpApi.Exceptions.AccessDeniedException;
 import com.example.JAQpApi.Exceptions.ImageException;
 import com.example.JAQpApi.Exceptions.NotFoundException;

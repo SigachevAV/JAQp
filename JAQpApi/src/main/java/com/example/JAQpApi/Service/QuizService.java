@@ -1,8 +1,8 @@
 package com.example.JAQpApi.Service;
 
 import com.example.JAQpApi.DTO.*;
-import com.example.JAQpApi.Entity.ImageMetadata;
-import com.example.JAQpApi.Entity.Quiz;
+import com.example.JAQpApi.Entity.Quiz.Quiz;
+import com.example.JAQpApi.Entity.Quiz.ImageMetadata;
 import com.example.JAQpApi.Entity.User.User;
 import com.example.JAQpApi.Exceptions.AccessDeniedException;
 import com.example.JAQpApi.Exceptions.ImageException;

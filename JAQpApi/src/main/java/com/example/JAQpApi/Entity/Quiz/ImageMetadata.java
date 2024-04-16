@@ -1,4 +1,4 @@
-package com.example.JAQpApi.Entity;
+package com.example.JAQpApi.Entity.Quiz;
 
 import com.example.JAQpApi.Entity.User.User;
 

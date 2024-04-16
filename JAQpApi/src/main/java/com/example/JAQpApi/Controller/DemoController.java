@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.JAQpApi.Entity.User.User;
-import com.example.JAQpApi.Exeptions.UserNotFoundExeption;
+import com.example.JAQpApi.Exceptions.NotFoundException;
 import com.example.JAQpApi.Service.AuthService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -27,7 +27,7 @@ public class DemoController {
 
 
     @GetMapping("/test")
-    public ResponseEntity<String> sayHello(@Nullable @RequestHeader("Authorization") String authorization) throws UserNotFoundExeption{
+    public ResponseEntity<String> sayHello(@Nullable @RequestHeader("Authorization") String authorization) throws NotFoundException{
         
         if ( authorization != null ){
             User user = authService.GetUserByToken(authorization);

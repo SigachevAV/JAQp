@@ -1,6 +1,6 @@
 package com.example.JAQpApi.Entity.User;
 
-import com.example.JAQpApi.Entity.ImageMetadata;
+import com.example.JAQpApi.Entity.Quiz.ImageMetadata;
 import com.example.JAQpApi.Entity.Quiz.Quiz;
 import com.example.JAQpApi.Entity.Token.Token;
 import jakarta.persistence.*;
@@ -37,8 +37,8 @@ public class User implements UserDetails
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
-    @OneToMany(mappedBy = "user")
-    private List<Quiz> quizList;
+    // @OneToMany(mappedBy = "user")
+    // private List<Quiz> quizList;
 
     @Enumerated(EnumType.STRING)
     private Role role;

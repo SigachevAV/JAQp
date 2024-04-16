@@ -1,4 +1,4 @@
-package com.example.JAQpApi.Entity;
+package com.example.JAQpApi.Entity.Quiz;
 
 import jakarta.persistence.*;
 import lombok.*;
