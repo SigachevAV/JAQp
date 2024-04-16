@@ -80,6 +80,45 @@ public class ImageController
         return ResponseEntity.ok().contentType(ImageService.GetType(filename)).body(file);
     }
 
+
+
+    @Operation(
+        description = "Удалить изображение, принадлежащее данному пользователю. Требуется авторизация или права администратора.",
+        summary = "Удвление изображения",
+        responses = {
+            @ApiResponse(
+                description = "Изображение удалено",
+                responseCode = "200",
+                content = @Content(
+                    mediaType = "text/plain",
+                    schema = @Schema(
+                        example = "Изображение успешно удалено"
+                    )
+                )
+            ),
+            @ApiResponse(
+                description = "Internal Server Error",
+                responseCode = "500",
+                content = @Content(
+                mediaType = "text/plain"
+                )
+            ),
+            @ApiResponse(
+                description = "Неверный файл",
+                responseCode = "400",
+                content = @Content(
+                mediaType = "text/plain"
+                )
+            ),
+            @ApiResponse(
+                description = "UNAUTHENTICATED",
+                responseCode = "401",
+                content = @Content(
+                    mediaType = "text/plain"
+                )
+            )
+        }
+    )
     @DeleteMapping("/{filename}")
     ResponseEntity<String> DeleteImage(@PathVariable String filename, @RequestHeader String Authorization) throws AccessDeniedException, ImageException, NotFoundException
     {

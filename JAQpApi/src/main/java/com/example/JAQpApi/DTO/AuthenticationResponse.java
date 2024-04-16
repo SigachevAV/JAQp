@@ -18,7 +18,10 @@ public class AuthenticationResponse
     private Integer id;
     @Schema(name = "Auth token", example = "bfkjwebjk2b34bjkbkjdsbsjksdkjfnkw32")
     private String jwtToken;
+    @Schema( example = "username123")
     private String username;
+
+
     public AuthenticationResponse(String msg) {
         this.msg = msg;
     }

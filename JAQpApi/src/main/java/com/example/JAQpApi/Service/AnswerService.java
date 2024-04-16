@@ -32,7 +32,7 @@ public class AnswerService
                 .build();
         answerRepo.save(answer);
         return AnswerCreateResponse.builder()
-                .id(answer.getId())
+                .question_id(answer.getQuestion().getQuestion_Id())
                 .content(answer.getDescription())
                 .image(imageMetadataWithName.getImageName())
                 .is_right(answer.is_right())

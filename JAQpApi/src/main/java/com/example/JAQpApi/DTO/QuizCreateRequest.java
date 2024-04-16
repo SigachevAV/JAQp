@@ -6,13 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class QuizCreateRequest
 {
+    @Schema( example = "my quiz 123")
     private String name;
     private MultipartFile thumnail;
+    @Schema ( example = "quiz about smth")
     private String description;
 }
