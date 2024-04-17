@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -47,21 +48,33 @@ public class AdminController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('admin:read')")
+    @Operation(
+        summary = "ADMIN GET"
+    )
     public String get() {
         return "GET:: admin controller";
     }
     @PostMapping
     @PreAuthorize("hasAuthority('admin:create')")
+    @Operation(
+        summary = "ADMIN POST"
+    )
     public String post() {
         return "POST:: admin controller";
     }
     @PutMapping
     @PreAuthorize("hasAuthority('admin:update')")
+    @Operation(
+        summary = "ADMIN PUT"
+    )
     public String put() {
         return "PUT:: admin controller";
     }
     @DeleteMapping
     @PreAuthorize("hasAuthority('admin:delete')")
+    @Operation(
+        summary = "ADMIN DELETE"
+    )
     public String delete() {
         return "DELETE:: admin controller";
     }

@@ -162,4 +162,45 @@ public class AuthController {
         return resp;
     }
 
+    @PostMapping("/logout")
+    @Operation(
+        description = "Выйти из аккаунта пользователя.",
+        summary = "LOGOUT",
+        responses = {
+            @ApiResponse(
+                description = "Успешный выход из системы",
+                responseCode = "200",
+                content = @Content(
+                    mediaType = "text/plain",
+                    examples = @ExampleObject(
+                        value = "Успешный выход из системы."
+                    )
+                )
+            ),
+            @ApiResponse(
+                content = @Content(
+                    mediaType = "text/plain"
+                ),
+                description = "not logged in",
+                responseCode = "401"
+            ),
+            @ApiResponse(
+                content = @Content(
+                    mediaType = "text/plain"
+                ),
+                description = "Unexpected Error",
+                responseCode = "500"
+            )
+        }
+    )
+    ResponseEntity<String> logout( @RequestHeader String Authorization){
+        return new ResponseEntity<>(HttpStatus.OK);
+    } 
+
+
+
+
+
+
+
 }

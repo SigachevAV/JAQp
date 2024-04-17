@@ -96,7 +96,7 @@ public class UserController
         description = "Получение информации о пользователе",
         responses = @ApiResponse(
             responseCode = "200",
-            description = "",
+            description = "Данные пользователя получены успешно",
             content = @Content(
                 mediaType = "application/json",
                 schema = @Schema(

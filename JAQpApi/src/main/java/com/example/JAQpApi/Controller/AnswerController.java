@@ -99,7 +99,7 @@ public class AnswerController
             description = "Успешно изменен ответ"
         )
     )
-    ResponseEntity<AnswerCreateResponse> changeAnswer(@RequestHeader String Authorization, @PathVariable Integer answerID, @ModelAttribute AnswerCreateRequest request) throws AccessDeniedException, ImageException, NotFoundException
+    ResponseEntity<AnswerCreateResponse> ChangeAnswer(@RequestHeader String Authorization, @PathVariable Integer answerID, @ModelAttribute AnswerCreateRequest request) throws AccessDeniedException, ImageException, NotFoundException
     {
         return new ResponseEntity<>(new AnswerCreateResponse(), HttpStatus.OK);
         // return answerService.AddAnswer(Authorization, request);
