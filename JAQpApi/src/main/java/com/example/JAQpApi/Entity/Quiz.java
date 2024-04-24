@@ -22,10 +22,10 @@ public class Quiz
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer quiz_id;
 
-    @Column
+    @Column(nullable = true)
     private String name;
 
-    @Column
+    @Column(nullable = true)
     private String description;
 
     @ManyToOne
@@ -33,7 +33,7 @@ public class Quiz
     private User owner;
 
     @OneToOne
-    @JoinColumn(name = "imageMetadata_name")
+    @JoinColumn(name = "imageMetadata_name", nullable = true)
     private ImageMetadata thumnail;
 
     @OneToMany(mappedBy = "quiz")

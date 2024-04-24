@@ -37,7 +37,7 @@ public class AuthService {
     }
     public User GetUserByToken(String _token) throws NotFoundException
     {
-        return tokenRepository.findByToken(StripToken(_token)).orElseThrow(() -> new NotFoundException("User", "token="+_token)).getUser();
+        return tokenRepository.findByToken(StripToken(_token)).orElseThrow(() -> new NotFoundException("User", "token" ,_token)).getUser();
     }
     public String register(RegistrationRequest request) {
         User user = User.builder()

@@ -3,16 +3,16 @@ package com.example.JAQpApi.DTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
-public class QuizCreateResponse
+public class GetQuestionResponse
 {
-    private Integer quizId;
+    private Integer id;
     private String description;
-    private String imageName;
-    private String name;
+    private String image;
+    private List<Integer> answers;
 }

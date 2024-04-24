@@ -7,8 +7,8 @@ public class NotFoundException extends Exception
         super(message);
     }
 
-    public NotFoundException(String _type, String _resource)
+    public NotFoundException(String _type, String _resource, String _value)
     {
-        super(_type + " with " + _resource + " not found");
+        super(_type + " with " + _resource + " " + _value + " not found");
     }
 }
