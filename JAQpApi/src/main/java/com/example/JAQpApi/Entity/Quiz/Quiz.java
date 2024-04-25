@@ -20,7 +20,7 @@ public class Quiz
     @Unique
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer quiz_id;
+    private Integer id;
 
     @Column(nullable = true)
     private String name;
@@ -34,8 +34,8 @@ public class Quiz
 
     @OneToOne
     @JoinColumn(name = "imageMetadata_name", nullable = true)
-    private ImageMetadata thumnail;
+    private ImageMetadata thumbnail;
 
-    @OneToMany(mappedBy = "quiz")
+    @OneToMany
     private List<Question> questions;
 }

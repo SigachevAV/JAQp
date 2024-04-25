@@ -26,7 +26,7 @@ public class ImageMetadata
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(mappedBy = "thumnail", optional = true)
+    @OneToOne(mappedBy = "thumbnail", optional = true)
     private Quiz quiz;
 
     @OneToOne(mappedBy = "image", optional = true)

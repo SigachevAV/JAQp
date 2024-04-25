@@ -19,15 +19,4 @@ public class JaQpApiApplication
 	public static void main(String[] args) {
 		SpringApplication.run(JaQpApiApplication.class, args);
 	}
-
-	@Bean
-	public CommandLineRunner commandLineRunner(	AuthService service, QuizService quizService ) {
-		return args -> {
-			AuthenticationRequest adminAuth = AuthenticationRequest.builder()
-					.username("admin")
-					.password("admin")
-					.build();
-			System.out.println("Admin token: " + service.authenticate(adminAuth).getJwtToken());
-		};
-	}
 }

@@ -40,7 +40,7 @@ public class QuestionService
     public Optional<Question> ValidateAccessAndGetQuestion(String _token, Integer _id) throws NotFoundException, AccessDeniedException
     {
         Question question = questionRepo.findById(_id).orElseThrow(() -> new NotFoundException(""));
-        if(quizService.ValidateAccessAndGetQuiz(_token ,question.getQuiz().getQuiz_id()).isPresent())
+        if(quizService.ValidateAccessAndGetQuiz(_token ,question.getQuiz().getId()).isPresent())
         {
             return Optional.of(question);
         }
@@ -62,7 +62,7 @@ public class QuestionService
         questionRepo.save(question);
         return QuestionCreateResponse.builder()
                 .content(question.getDescription())
-                .id(question.getQuestion_Id())
+                .id(question.getId())
                 .imageName(imageMetadataWithName.getImageName())
                 .build();
     }
@@ -70,7 +70,7 @@ public class QuestionService
     public void DeleteQuestion(String _token, Integer _id) throws NotFoundException, AccessDeniedException, ImageException
     {
         Question question = questionRepo.findById(_id).orElseThrow(() -> new NotFoundException("Question", "id", Integer.toString(_id)));
-        Quiz quiz = quizService.ValidateAccessAndGetQuiz(_token, question.getQuiz().getQuiz_id()).orElseThrow(() -> new NotFoundException(""));
+        Quiz quiz = quizService.ValidateAccessAndGetQuiz(_token, question.getQuiz().getId()).orElseThrow(() -> new NotFoundException(""));
         List<Answer> answerList = question.getAnswerList();
         ImageMetadata imageMetadata = question.getImage();
         for (Answer answer : answerList)
@@ -90,7 +90,7 @@ public class QuestionService
         }
         return GetQuestionResponse.builder()
                 .description(_question.getDescription())
-                .id(_question.getQuestion_Id())
+                .id(_question.getId())
                 .image((_question.getImage() != null) ? _question.getImage().getName() : null)
                 .answers(answerId)
                 .build();

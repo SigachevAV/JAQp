@@ -24,7 +24,7 @@ public class QuestionsOfQuizResponse
         List<Integer> list = new ArrayList<Integer>();
         for (int i = 0; i < _list.size(); i++)
         {
-            list.add(_list.get(i).getQuestion_Id());
+            list.add(_list.get(i).getId());
         }
         return new QuestionsOfQuizResponse(list);
     }

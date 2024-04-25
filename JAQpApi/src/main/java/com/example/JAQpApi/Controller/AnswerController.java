@@ -3,8 +3,6 @@ package com.example.JAQpApi.Controller;
 
 import com.example.JAQpApi.DTO.AnswerCreateRequest;
 import com.example.JAQpApi.DTO.AnswerCreateResponse;
-import com.example.JAQpApi.DTO.AnswersCreateRequest;
-import com.example.JAQpApi.DTO.AnswersCreateResponse;
 import com.example.JAQpApi.Exceptions.*;
 import com.example.JAQpApi.Service.AnswerService;
 
@@ -13,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import okhttp3.Response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
