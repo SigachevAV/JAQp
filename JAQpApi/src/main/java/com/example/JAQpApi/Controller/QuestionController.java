@@ -3,8 +3,6 @@ package com.example.JAQpApi.Controller;
 import com.example.JAQpApi.DTO.GetQuestionResponse;
 import com.example.JAQpApi.DTO.QuestionCreateRequest;
 import com.example.JAQpApi.DTO.QuestionCreateResponse;
-import com.example.JAQpApi.DTO.QuestionsCreateRequest;
-import com.example.JAQpApi.DTO.QuestionsCreateResponse;
 import com.example.JAQpApi.Exceptions.AccessDeniedException;
 import com.example.JAQpApi.Exceptions.ImageException;
 import com.example.JAQpApi.Exceptions.NotFoundException;
@@ -18,7 +16,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
