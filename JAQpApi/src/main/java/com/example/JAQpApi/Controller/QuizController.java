@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -56,6 +57,8 @@ public class QuizController
 
     private final QuizService quizService;
 
+    /*--- CREATE ---*/
+
     @PostMapping("/create")
     @Operation(
         summary = "Создание квиза",
@@ -76,39 +79,33 @@ public class QuizController
         responses = {
             @ApiResponse(
                 responseCode = "200",
-                description = "Квиз создан успешно."
+                description = "Квиз создан успешно.",
+                content = @Content(
+                    schema = @Schema(
+                        implementation = QuizCreateResponse.class
+                    )
+                )
             ),
             @ApiResponse(
                 responseCode = "400",
-                description = "Неправильное изображение."
+                description = "Неправильное изображение.",
+                content = @Content(
+                    mediaType = "text/plain",
+                    examples = @ExampleObject(
+                        value = "Неправильное изображение."
+                    )
+                )
             )
         }
     )
-    public ResponseEntity CreateQuiz(@ModelAttribute QuizCreateRequest request, @RequestHeader String Authorization)
+    public QuizResponse CreateQuiz(@ModelAttribute QuizCreateRequest request, @RequestHeader String Authorization) throws ImageException, NotFoundException
     {
-        //try
-        //{
-        //    return ResponseEntity.ok(quizService.CreateQuiz(Authorization, request));
-        //}
-        //catch (UserNotFoundExeption e)
-        //{
-        //    return ResponseEntity.badRequest().body("Unauthorized");
-        //}
-        //catch (ImageInvalidException e)
-        //{
-        //    return ResponseEntity.badRequest().body("Invalid Image");
-        //}
-        //catch (ImageStorageException e)
-        //{
-        //    return ResponseEntity.internalServerError().body(e.getMessage());
-        //}
-        //catch (Exception e)
-        //{
-        //    return ResponseEntity.badRequest().body("");
-        //}
-        return ResponseEntity.ok().build();
+        return quizService.CreateQuiz(Authorization, request);
     }
 
+
+    /*--- READ ---*/
+    // general read
     @Operation(
         summary = "Получить информацию о квизе",
         description = "Получить информацию о квизе с заданным id. При попытке получить скрытый квиз, непренадлежащий авторизированному пользователю - 403",
@@ -127,20 +124,12 @@ public class QuizController
 
     )
     @GetMapping("/{id}")
-    public ResponseEntity GetQuiz(@PathVariable Integer id)
+    public QuizResponse GetQuiz(@PathVariable Integer id) throws NotFoundException
     {
-        //try
-        //{
-        //    return ResponseEntity.ok(quizService.GetQuiz(id));
-        //}
-        //catch (NotFoundException e)
-        //{
-        //    return ResponseEntity.notFound().build();
-        //}
-        return ResponseEntity.notFound().build();
+        return quizService.GetQuiz(id);
     }
 
-
+    // read owned quiz
     @Operation(
         summary = "Получить свои квизы.",
         description = "Получить свои квизы. Необходима авторизация.",
@@ -163,31 +152,11 @@ public class QuizController
 
     )
     @GetMapping("/get_owned")
-    public ResponseEntity GetOwnedQuiz(@RequestHeader @Nullable String Authorization)
+    public OwnedQuizListResponse GetOwnedQuiz(@RequestHeader @Nullable String Authorization) throws NotFoundException
     {
-        //try
-        //{
-        //    return ResponseEntity.ok(quizService.GetOwnedQuiz(Authorization));
-        //}
-        //catch (UserNotFoundExeption e)
-        //{
-        //    return ResponseEntity.status(401).body("Unauth");
-        //}
-        return ResponseEntity.status(401).body("Unauth");
-    }
-}
-/*
-    public QuizCreateResponse CreateQuiz(@ModelAttribute QuizCreateRequest request, @RequestHeader String Authorization) throws ImageException, NotFoundException
-    {
-        return quizService.CreateQuiz(Authorization, request);
+        return quizService.GetOwnedQuiz(Authorization);
     }
 
-    @GetMapping("/get_owned/{id}")
-    public ResponseEntity GetOwnedQuiz(@PathVariable Integer id)
-    {
-        //TODO то же самое что и по токену, но с картинками
-        return ResponseEntity.status(501).build();
-    }
 
     @GetMapping("/get_questions/{id}")
     public QuestionsOfQuizResponse GetQuestions(@PathVariable Integer id) throws NotFoundException
@@ -195,17 +164,72 @@ public class QuizController
         return quizService.GetQuestionsOfQuiz(id);
     }
 
-    @GetMapping("/{id}")
-    public QuizResponse GetQuiz(@PathVariable Integer id) throws NotFoundException
+    /*--- UPDATE ---*/
+    @Operation(
+        summary = "Изменение квиза",
+        responses = @ApiResponse(
+            responseCode = "200",
+            description = "Вопрос изменен",
+            content = @Content(
+                schema = @Schema(
+                    implementation = QuizResponse.class
+                )
+            )
+        ),
+        requestBody = @RequestBody(
+            content = @Content(
+                schema = @Schema(
+                    implementation = QuizCreateRequest.class
+                )
+            )
+        )
+    )
+    @PutMapping("change/{id}")
+    public QuizResponse ChangeQuiz(@RequestHeader String Authorization, @RequestBody QuizCreateRequest request, @PathVariable Integer id) throws AccessDeniedException, ImageException, NotFoundException
     {
-        return quizService.GetQuiz(id);
+        return quizService.ChangeQuiz(Authorization, request, id);
     }
 
-    @GetMapping("/get_owned")
-    public OwnedQuizListResponse GetOwnedQuiz(@RequestHeader @Nullable String Authorization) throws NotFoundException
+    @Operation(
+        summary = "Изменение вопроса",
+        responses = @ApiResponse(
+            responseCode = "200",
+            description = "Вопрос изменен",
+            content = @Content(
+                schema = @Schema(
+                    implementation = QuizResponse.class
+                )
+            )
+        ),
+        requestBody = @RequestBody(
+            content = @Content(
+                schema = @Schema(
+                    implementation = QuizChangeRequest.class
+                )
+            )
+        )
+    )
+    @PutMapping("change_wo_image/{id}")
+    public QuizResponse ChangeQuizWOImage(@RequestHeader String Authorization, @RequestBody QuizChangeRequest request, @PathVariable Integer id) throws AccessDeniedException, NotFoundException
     {
-        return quizService.GetOwnedQuiz(Authorization);
+        return quizService.ChangeQuiz(Authorization, request, id);
+    }
+
+    /*--- DELETE ---*/
+    @Operation(
+        summary = "Удаление квиза",
+        responses = @ApiResponse(
+            responseCode = "200",
+            description = "Квиз удален",
+            content = @Content(
+                mediaType = "text/plain"
+            )
+        )
+    )
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity<String> Remove(@RequestHeader String Authorization, @PathVariable Integer id) throws AccessDeniedException, ImageException, NotFoundException
+    {
+        quizService.DeleteQuiz(Authorization, id);
+        return ResponseEntity.ok("OK");
     }
 }
-
-*/

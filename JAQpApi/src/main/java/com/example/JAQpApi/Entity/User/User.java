@@ -1,14 +1,12 @@
 package com.example.JAQpApi.Entity.User;
 
+
 import com.example.JAQpApi.Entity.Quiz.ImageMetadata;
 import com.example.JAQpApi.Entity.Quiz.Quiz;
 import com.example.JAQpApi.Entity.Token.Token;
 import jakarta.persistence.*;
 import lombok.*;
 
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-import org.springframework.data.relational.core.sql.SQL;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

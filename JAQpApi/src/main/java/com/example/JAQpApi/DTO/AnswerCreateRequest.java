@@ -18,8 +18,9 @@ public class AnswerCreateRequest
     private Integer question_id;
     @Schema(example = "answer#123")
     private String content;
-    
+
     private MultipartFile image;
+    
     @Schema(example = "true")
     private Boolean is_right;
 }

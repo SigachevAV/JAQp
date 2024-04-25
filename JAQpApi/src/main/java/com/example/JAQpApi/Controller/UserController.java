@@ -84,7 +84,7 @@ public class UserController
             )
         )
     )
-    public ResponseEntity setGeneralInfo(@PathVariable Integer id, @RequestHeader String Authorization, @RequestBody UserChangeDataRequest request) throws NotFoundException, AccessDeniedException
+    public ResponseEntity<String> setGeneralInfo(@PathVariable Integer id, @RequestHeader String Authorization, @RequestBody UserChangeDataRequest request) throws AccessDeniedException, NotFoundException
     {
         userService.SetGeneralData(id, Authorization, request);
         return ResponseEntity.ok("ok");
@@ -106,8 +106,8 @@ public class UserController
             )
         )
     )
-    public ResponseEntity getUser(@PathVariable Integer id) throws NotFoundException
+    public UserGeneralResponse getUser(@PathVariable Integer id) throws NotFoundException
     {
-        return ResponseEntity.ok().body(userService.GetUserGeneralInfo(id));
+        return userService.GetUserGeneralInfo(id);
     }
 }

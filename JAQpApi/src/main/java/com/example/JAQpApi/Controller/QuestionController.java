@@ -1,5 +1,6 @@
 package com.example.JAQpApi.Controller;
 
+import com.example.JAQpApi.DTO.GetQuestionResponse;
 import com.example.JAQpApi.DTO.QuestionCreateRequest;
 import com.example.JAQpApi.DTO.QuestionCreateResponse;
 import com.example.JAQpApi.DTO.QuestionsCreateRequest;
@@ -12,17 +13,12 @@ import com.example.JAQpApi.Service.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.checkerframework.checker.units.qual.A;
 import org.checkerframework.checker.units.qual.C;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,65 +62,113 @@ public class QuestionController
 {
     private QuestionService questionService;
 
-    @PostMapping("/create")
+    /*--- CREATE ---*/
     @Operation(
         summary = "Добавление вопроса",
         description = "Добавить вопрос к указанному квизу, принадлежащему пользователю. Требуется авторизация или права администратора.",
         responses = @ApiResponse(
             responseCode = "200",
-            description = "Вопрос добавлен"
+            description = "Вопрос добавлен",
+            content = @Content(
+                schema = @Schema(
+                    implementation = QuestionCreateResponse.class
+                )
+            )
+        ),
+        requestBody = @RequestBody(
+            content = @Content(
+                schema = @Schema(
+                    implementation = QuestionCreateRequest.class
+                )
+            )
         )
     )
-    public ResponseEntity<QuestionCreateResponse> CreateQuestion(@RequestHeader String Authorization, @ModelAttribute QuestionCreateRequest request) throws AccessDeniedException, ImageException, NotFoundException
+    @PostMapping("/add")
+    public QuestionCreateResponse CreateQuestion(@RequestHeader String Authorization, @ModelAttribute QuestionCreateRequest request) throws AccessDeniedException, ImageException, NotFoundException
     {
-            return new ResponseEntity<QuestionCreateResponse>(questionService.AddQuestion(Authorization, request), HttpStatus.OK);
+            return questionService.AddQuestion(Authorization, request);
     }
-    
-    @PutMapping("/update")
+
+    /*--- READ ---*/
+    @Operation(
+        summary = "Получение вопроса",
+        description = "Получит вопрос к указанному квизу, принадлежащему пользователю. Требуется авторизация или права администратора.",
+        responses = @ApiResponse(
+            responseCode = "200",
+            description = "Вопрос получен",
+            content = @Content(
+                schema = @Schema(
+                    implementation = GetQuestionResponse.class
+                )
+            )
+        )
+    )
+    @GetMapping("/{id}")
+    public GetQuestionResponse getQuestion(@PathVariable Integer id) throws NotFoundException
+    {
+        return questionService.GetQuestion(id);
+    }
+    /*--- UPDATE ---*/
     @Operation(
         summary = "Изменение вопроса",
         description = "Изменить вопрос к указанному квизу, принадлежащему пользователю. Требуется авторизация или права администратора.",
         responses = @ApiResponse(
             responseCode = "200",
-            description = "Вопрос изменен"
+            description = "Вопрос изменен",
+            content = @Content(
+                schema = @Schema(
+                    implementation = GetQuestionResponse.class
+                )
+            )
+        ),
+        requestBody = @RequestBody(
+            content = @Content(
+                schema = @Schema(
+                    implementation = QuestionCreateRequest.class
+                )
+            )
         )
     )
-    public ResponseEntity<QuestionsCreateResponse> UpdateQuestion(@RequestHeader String Authorization, @ModelAttribute QuestionsCreateRequest request) throws AccessDeniedException, ImageException, NotFoundException
+    @PutMapping("change/{id}")
+    public GetQuestionResponse ChangeQuestion(@RequestHeader String Authorization, @ModelAttribute QuestionCreateRequest request, @PathVariable Integer id) throws AccessDeniedException, ImageException, NotFoundException
     {
-        return new ResponseEntity<>(HttpStatus.OK);
+        return questionService.ChangeQuestion(Authorization, id, request);
     }
 
-    @GetMapping("/read")
     @Operation(
-        summary = "Получение вопроса",
-        description = "Получит вопрос к указанному квизу, принадлежащему пользователю. Требуется авторизация или права администратора.",
+        summary = "Изменение вопроса",
+        description = "Изменить вопрос к указанному квизу, принадлежащему пользователю. Требуется авторизация или права администратора.",
         responses = @ApiResponse(
             responseCode = "200",
-            description = "Вопрос получен"
+            description = "Вопрос изменен",
+            content = @Content(
+                schema = @Schema(
+                    implementation = GetQuestionResponse.class
+                )
+            )
         )
     )
-    public ResponseEntity<QuestionsCreateResponse> ReadQuestion(
-        @RequestHeader String Authorization,
-        @PathVariable Integer questionID,
-        @PathVariable Integer quizID ) throws AccessDeniedException, ImageException, NotFoundException
+    @PutMapping("change_wo_image/{id}")
+    public GetQuestionResponse ChangeQuestionWOImage(@RequestHeader String Authorization, @RequestParam String description, @PathVariable Integer id) throws AccessDeniedException, NotFoundException
     {
-        return new ResponseEntity<>(HttpStatus.OK);
+        return questionService.ChangeQuestion(Authorization, id, description);
     }
 
-    @DeleteMapping("/delete")
+    /*--- DELETE ---*/
     @Operation(
-        summary = "Получение вопроса",
-        description = "Получит вопрос к указанному квизу, принадлежащему пользователю. Требуется авторизация или права администратора.",
+        summary = "Удаление вопроса",
         responses = @ApiResponse(
             responseCode = "200",
-            description = "Вопрос получен"
+            description = "Вопрос удален",
+            content = @Content(
+                mediaType = "text/plain"
+            )
         )
     )
-    public ResponseEntity<String> DeleteQuestion(
-        @RequestHeader String Authorization,
-        @PathVariable Integer questionID,
-        @PathVariable Integer quizID ) throws AccessDeniedException, ImageException, NotFoundException
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity Remove(@RequestHeader String Authorization, @PathVariable Integer id) throws AccessDeniedException, ImageException, NotFoundException
     {
-        return new ResponseEntity<>(HttpStatus.OK);
+        questionService.DeleteQuestion(Authorization, id);
+        return ResponseEntity.ok("OK");
     }
 }

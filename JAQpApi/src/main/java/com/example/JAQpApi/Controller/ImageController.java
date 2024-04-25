@@ -181,33 +181,8 @@ public class ImageController
             )
         }
     )
-    ResponseEntity UploadImage(@ModelAttribute ImageUploadRequest file, @RequestHeader String Authorization)
+    ImageUploadResponse UploadImage(@ModelAttribute ImageUploadRequest file, @RequestHeader String Authorization) throws ImageException, NotFoundException
     {
-        try
-        {
-            ImageUploadResponse response =  new ImageUploadResponse(imageService.UploadFile(file.getFile(), Authorization));
-            return ResponseEntity.ok().body(response);
-        }
-        catch (ImageInvalidException e)
-        {
-
-            logger.debug("Неверный файл");
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        catch (ImageException e)
-        {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
-        catch (NotFoundException e)
-        {
-            logger.debug("Неверный юзер");
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        catch (Exception e)
-        {
-            logger.debug("Unexpected error");
-            logger.debug(e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return new ImageUploadResponse(imageService.UploadFile(file.getFile(), Authorization));
     }
 }

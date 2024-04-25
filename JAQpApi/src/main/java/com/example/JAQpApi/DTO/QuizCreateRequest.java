@@ -16,7 +16,7 @@ public class QuizCreateRequest
 {
     @Schema( example = "my quiz 123")
     private String name;
-    private MultipartFile thumnail;
+    private MultipartFile thumbnail;
     @Schema ( example = "quiz about smth")
     private String description;
 }

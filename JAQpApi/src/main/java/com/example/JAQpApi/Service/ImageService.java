@@ -42,9 +42,18 @@ public class ImageService
         return file;
     }
 
+    public void DeleteImage(ImageMetadata _imageMetadata, String _token) throws AccessDeniedException, ImageException, NotFoundException
+    {
+        if(_imageMetadata == null)
+        {
+            return;
+        }
+        DeleteImage(_imageMetadata.getName(), _token);
+    }
+
     public void DeleteImage(String _filename, String _token) throws ImageException, NotFoundException, AccessDeniedException
     {
-        ImageMetadata image = imageMetadataRepo.findById(_filename).orElseThrow(() -> new NotFoundException("Image", _filename));
+        ImageMetadata image = imageMetadataRepo.findById(_filename).orElseThrow(() -> new NotFoundException("Image", "name", _filename));
         User author = authService.GetUserByToken(_token);
         if (!image.getUser().getId().equals(author.getId()))
         {
@@ -94,6 +103,10 @@ public class ImageService
 
     public String UploadFile(MultipartFile _file, String _token) throws ImageException, NotFoundException
     {
+        if(_file == null)
+        {
+            return null;
+        }
         createBucket();
         if(_file.isEmpty() || _file.getOriginalFilename() == null)
         {
@@ -167,6 +180,21 @@ public class ImageService
         }
         return new ImageMetadataWithName();
     }
+
+    public ImageMetadata ChangeImage(ImageMetadata _name, String _token, MultipartFile _file) throws AccessDeniedException, ImageException, NotFoundException
+    {
+        ImageMetadata imageMetadata = null;
+        if(_name != null)
+        {
+            DeleteImage(_name, _token);
+        }
+        if(_file != null)
+        {
+            imageMetadata = imageMetadataRepo.findById(UploadFile(_file, _token)).orElseThrow(() -> new NotFoundException("new Image not found"));
+        }
+        return imageMetadata;
+    }
+
 
     public static class ImageMetadataWithName
     {

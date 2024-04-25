@@ -35,7 +35,7 @@ public class UserService
         Optional<User> user = userRepository.findById(_id);
         if (user.isEmpty())
         {
-            throw new NotFoundException("User", "id="+_id);
+            throw new NotFoundException("User", "id" , Integer.toString(_id));
         }
         return UserGeneralResponse.FromUser(user.get());
     }
