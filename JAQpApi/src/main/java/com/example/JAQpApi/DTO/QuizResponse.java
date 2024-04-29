@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,4 +22,6 @@ public class QuizResponse
     private String description;
     @Schema( example = "my quiz 123")
     private String name;
+
+    private List<String> tags;
 }

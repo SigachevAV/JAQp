@@ -1,17 +1,16 @@
-package com.example.JAQpApi.DTO;
+package com.example.JAQpApi.DTO.Tag;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OwnedQuizListResponse
+@Builder
+public class TagData
 {
-    private List<QuizData> quizDataList;
+    private String value;
+    private String label;
 }

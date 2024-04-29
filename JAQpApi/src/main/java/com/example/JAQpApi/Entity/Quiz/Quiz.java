@@ -36,6 +36,9 @@ public class Quiz
     @JoinColumn(name = "imageMetadata_name", nullable = true)
     private ImageMetadata thumbnail;
 
-    @OneToMany
+    @OneToMany(mappedBy = "quiz")
     private List<Question> questions;
+
+    @OneToMany
+    private List<Tag> tags;
 }

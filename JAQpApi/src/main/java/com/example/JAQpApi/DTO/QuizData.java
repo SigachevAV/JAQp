@@ -16,4 +16,8 @@ public class QuizData
     private Integer id;
     @Schema(example = "my quiz 123")
     private String name;
+    @Schema(example = "image.jpeg")
+    private String image;
+    @Schema(example = "quiz description")
+    private String description;
 }

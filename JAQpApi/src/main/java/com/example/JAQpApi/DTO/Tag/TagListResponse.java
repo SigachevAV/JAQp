@@ -1,4 +1,4 @@
-package com.example.JAQpApi.DTO;
+package com.example.JAQpApi.DTO.Tag;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OwnedQuizListResponse
+@Builder
+public class TagListResponse
 {
-    private List<QuizData> quizDataList;
+    private List<TagData> tagList;
 }
