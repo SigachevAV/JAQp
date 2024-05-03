@@ -30,6 +30,11 @@ public class UserService
         return user;
     }
 
+    public User GetUserById(Integer _id) throws NotFoundException
+    {
+        return userRepository.findById(_id).orElseThrow(() -> new NotFoundException("user", "id", _id.toString()));
+    }
+
     public UserGeneralResponse GetUserGeneralInfo(int _id) throws NotFoundException
     {
         Optional<User> user = userRepository.findById(_id);

@@ -23,5 +23,7 @@ public class QuizResponse
     @Schema( example = "my quiz 123")
     private String name;
 
+
+    private Boolean isPublic;
     private List<String> tags;
 }

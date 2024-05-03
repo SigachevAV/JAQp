@@ -5,16 +5,15 @@ services:
     image: 'jaqp_api:latest'
     build:
       context: ./JAQpApi
-    container_name: JAQp_api
+    container_name: JAQp-api
     depends_on: 
-      - JAQp_db
-      - JAQp_minio
+      - JAQp-db
+      - JAQp-minio
     ports: 
-      - 8080:8080
-
-  JAQp_db:
+      - 8080:8080  
+  JAQp-db:
     image: 'postgres:latest'
-    container_name: JAQp_db
+    container_name: JAQp-db
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -24,9 +23,9 @@ services:
     volumes:
       - pg-data:/var/lib/postgresql/data
 #     - ./schema:/docker-entrypoint-initdb.d   
-  JAQp_minio:
+  JAQp-minio:
     image: minio/minio
-    container_name: JAQp_minio
+    container_name: JAQp-minio
     ports:
           - "9000:9000"
           - "9001:9001"

@@ -1,6 +1,5 @@
 package com.example.JAQpApi.Controller;
 
-import com.example.JAQpApi.DTO.ImageUploadRequest;
 import com.example.JAQpApi.DTO.OwnedQuizListResponse;
 import com.example.JAQpApi.DTO.QuizCreateRequest;
 import com.example.JAQpApi.DTO.QuizResponse;
@@ -18,16 +17,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.security.core.parameters.P;
 import com.example.JAQpApi.DTO.*;
-import com.example.JAQpApi.Exceptions.*;
-import com.example.JAQpApi.Service.QuizService;
-import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:8080")
@@ -152,17 +144,30 @@ public class QuizController
 
     )
     @GetMapping("/get_owned")
-    public OwnedQuizListResponse GetOwnedQuiz(@RequestHeader @Nullable String Authorization) throws NotFoundException
+    public OwnedQuizListResponse GetOwnedQuiz(@RequestHeader String Authorization) throws NotFoundException
     {
         return quizService.GetOwnedQuiz(Authorization);
     }
 
+
+    @GetMapping("/get_owned/{id}")
+    public OwnedQuizListResponse GetOwnedQuiz(@PathVariable Integer id) throws NotFoundException
+    {
+        return quizService.GetOwnedQuiz(id);
+    }
 
     @GetMapping("/get_questions/{id}")
     public QuestionsOfQuizResponse GetQuestions(@PathVariable Integer id) throws NotFoundException
     {
         return quizService.GetQuestionsOfQuiz(id);
     }
+
+    @PostMapping("/change_public/{id}")
+    public QuizResponse TogglePublic(@RequestHeader String Authorization, @PathVariable Integer id) throws AccessDeniedException, NotFoundException
+    {
+        return quizService.TogglePublic(Authorization, id);
+    }
+
 
     /*--- UPDATE ---*/
     @Operation(
@@ -232,4 +237,5 @@ public class QuizController
         quizService.DeleteQuiz(Authorization, id);
         return ResponseEntity.ok("OK");
     }
+
 }

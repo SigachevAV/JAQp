@@ -2,6 +2,7 @@ package com.example.JAQpApi.Controller;
 
 
 import com.example.JAQpApi.DTO.QuizResultRequest;
+import com.example.JAQpApi.DTO.UserResultsResponse;
 import com.example.JAQpApi.Exceptions.NotFoundException;
 import com.example.JAQpApi.Service.UserResultService;
 import lombok.AllArgsConstructor;
@@ -25,9 +26,17 @@ public class ResultController
     }
 
     @GetMapping("/result")
-    public ResponseEntity MakeResult(@RequestHeader String Authorization, @RequestBody QuizResultRequest request) throws NotFoundException
+    public ResponseEntity MakeResult(@RequestHeader @Nullable String Authorization, @ModelAttribute QuizResultRequest request) throws NotFoundException
     {
         userResultService.MakeResult(request.getId(), request.getResult(), Authorization);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/user/{id}")
+    public UserResultsResponse GetResults(@PathVariable Integer id) throws NotFoundException
+    {
+
+        return userResultService.GetResults(id);
+    }
+
 }

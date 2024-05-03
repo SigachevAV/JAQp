@@ -3,6 +3,7 @@ package com.example.JAQpApi.Controller;
 import com.example.JAQpApi.DTO.AuthenticationRequest;
 import com.example.JAQpApi.DTO.AuthenticationResponse;
 import com.example.JAQpApi.DTO.RegistrationRequest;
+import com.example.JAQpApi.Entity.User.Role;
 import com.example.JAQpApi.Exceptions.NotFoundException;
 import com.example.JAQpApi.Exceptions.UserAlreadyExists;
 import com.example.JAQpApi.Service.AuthService;
@@ -81,6 +82,10 @@ public class AuthController {
     public ResponseEntity<String> register(
             @RequestBody RegistrationRequest request
     ) {
+        if (request.getRole() == null)
+        {
+            request.setRole(Role.USER);
+        }
         MDC.put("Username", request.getUsername());
         ResponseEntity<String> resp;
         try {

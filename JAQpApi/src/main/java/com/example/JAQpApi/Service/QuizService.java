@@ -28,14 +28,20 @@ public class QuizService
     private final ImageService imageService;
     private final QuestionService questionService;
 
+    private final UserService userService;
+
     private final TagRepo tagRepo;
 
     private QuizResponse QuizResponseFactory(Quiz _quiz)
     {
-        List<String> tags = new ArrayList<String>(_quiz.getTags().size());
-        for (Tag tag : _quiz.getTags())
+
+        List<String> tags = null;
+        if(_quiz.getTags() != null)
         {
-            tags.add(tag.getTagId());
+            for (Tag tag : _quiz.getTags())
+            {
+                tags.add(tag.getTagId());
+            }
         }
         return QuizResponse.builder()
                 .id(_quiz.getId())
@@ -43,10 +49,11 @@ public class QuizService
                 .image_name((_quiz.getThumbnail() != null) ? _quiz.getThumbnail().getName() : null)
                 .name(_quiz.getName())
                 .tags(tags)
+                .isPublic(_quiz.getIsPublic())
                 .build();
     }
 
-    public QuizService(QuizRepo quizRepo, ImageMetadataRepo imageMetadataRepo, AuthService authService, ImageService imageService, @Lazy QuestionService questionService, TagRepo tagRepo)
+    public QuizService(QuizRepo quizRepo, ImageMetadataRepo imageMetadataRepo, AuthService authService, ImageService imageService, @Lazy QuestionService questionService, TagRepo tagRepo, UserService userService)
     {
         this.quizRepo = quizRepo;
         this.imageMetadataRepo = imageMetadataRepo;
@@ -54,6 +61,7 @@ public class QuizService
         this.imageService = imageService;
         this.questionService = questionService;
         this.tagRepo = tagRepo;
+        this.userService = userService;
     }
 
     public Optional<Quiz> ValidateAccessAndGetQuiz(String _token, Integer _id) throws AccessDeniedException, NotFoundException
@@ -73,7 +81,7 @@ public class QuizService
         {
             thumnail = imageMetadataRepo.findById(imageService.UploadFile(_request.getThumbnail(), _token)).orElseThrow(() -> new ImageException("Unknown image error"));
         }
-        List<Tag> tags = (List<Tag>) tagRepo.findAllById(_request.getTags());
+        List<Tag> tags = (_request.getTags() == null) ? null : (List<Tag>) tagRepo.findAllById(_request.getTags());
         User owner = authService.GetUserByToken(_token);
         Quiz quiz = Quiz.builder()
                 .description(_request.getDescription())
@@ -81,6 +89,7 @@ public class QuizService
                 .thumbnail(thumnail)
                 .owner(owner)
                 .tags(tags)
+                .isPublic(false)
                 .build();
         quiz = quizRepo.save(quiz);
         return QuizResponseFactory(quiz);
@@ -102,6 +111,26 @@ public class QuizService
         return new OwnedQuizListResponse(list);
     }
 
+
+    public OwnedQuizListResponse GetOwnedQuiz(Integer _id) throws NotFoundException
+    {
+        User owner = userService.GetUserById(_id);
+        List<QuizData> list = new ArrayList<>();
+        for (Quiz quiz : quizRepo.findAllByOwner(owner))
+        {
+            if (!quiz.getIsPublic())
+            {
+                continue;
+            }
+            list.add(QuizData.builder()
+                    .id(quiz.getId())
+                    .name(quiz.getName())
+                    .image((quiz.getThumbnail() == null) ? null : quiz.getThumbnail().getName())
+                    .description(quiz.getDescription())
+                    .build());
+        }
+        return new OwnedQuizListResponse(list);
+    }
     public QuestionsOfQuizResponse GetQuestionsOfQuiz(Integer _id) throws NotFoundException
     {
         return QuestionsOfQuizResponse.toDto(quizRepo.findById(_id).orElseThrow(() -> new NotFoundException("")).getQuestions());
@@ -151,6 +180,14 @@ public class QuizService
     public QuizResponse ChangeQuiz(String _token, QuizChangeRequest _request, Integer _id) throws AccessDeniedException, NotFoundException
     {
         Quiz quiz = ChangeQuiz(_token, _id, _request.getName(), _request.getDescription(), _request.getTags());
+        quizRepo.save(quiz);
+        return QuizResponseFactory(quiz);
+    }
+
+    public QuizResponse TogglePublic(String _token, Integer _id) throws AccessDeniedException, NotFoundException
+    {
+        Quiz quiz = ValidateAccessAndGetQuiz(_token, _id).orElseThrow(() -> new NotFoundException("Quiz", "id", _id.toString()));
+        quiz.setIsPublic(!quiz.getIsPublic());
         quizRepo.save(quiz);
         return QuizResponseFactory(quiz);
     }
