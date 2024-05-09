@@ -1,16 +1,6 @@
 version: '3.8'
 
 services:
-  JAQpApi:
-    image: 'jaqp_api:latest'
-    build:
-      context: ./JAQpApi
-    container_name: JAQp-api
-    depends_on: 
-      - JAQp-db
-      - JAQp-minio
-    ports: 
-      - 8080:8080  
   JAQp-db:
     image: 'postgres:latest'
     container_name: JAQp-db
@@ -35,8 +25,21 @@ services:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: miniominio 
     command: server --console-address ":9001" /data
-            
+  JAQp-Garnet:
+    image: 'ghcr.io/microsoft/garnet'
+    restart: always
+    container_name: JAQp-Garnet
+    ulimits:
+      memlock: -1
+    ports:
+      - "6379:6379"
+    # To avoid docker NAT, consider `host` mode.
+    # https://docs.docker.com/compose/compose-file/compose-file-v3/#network_mode
+    # network_mode: "host"
+    volumes:
+      - cache:/data
 volumes:
+  cache:
   pg-data:
   minio-data:
   

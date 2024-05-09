@@ -43,7 +43,7 @@ public class Quiz
     @OneToMany(mappedBy = "quiz")
     private List<Question> questions;
 
-    @OneToMany
+    @ManyToMany
     private List<Tag> tags;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)

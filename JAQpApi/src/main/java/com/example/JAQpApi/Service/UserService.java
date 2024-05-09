@@ -7,6 +7,8 @@ import com.example.JAQpApi.Exceptions.AccessDeniedException;
 import com.example.JAQpApi.Exceptions.NotFoundException;
 import com.example.JAQpApi.Repository.UserRepo;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -35,6 +37,8 @@ public class UserService
         return userRepository.findById(_id).orElseThrow(() -> new NotFoundException("user", "id", _id.toString()));
     }
 
+
+    @Cacheable(value = "UserService:GetUserGeneralByID", key = "#_id")
     public UserGeneralResponse GetUserGeneralInfo(int _id) throws NotFoundException
     {
         Optional<User> user = userRepository.findById(_id);
@@ -45,6 +49,7 @@ public class UserService
         return UserGeneralResponse.FromUser(user.get());
     }
 
+    @CacheEvict(value = "UserService:GetUserGeneralByID", key = "#_id")
     public void SetGeneralData(Integer _id, String _token, UserChangeDataRequest _request) throws NotFoundException, AccessDeniedException
     {
         User user = CheckAndGetUser(_id, _token);
