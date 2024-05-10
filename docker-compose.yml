@@ -2,17 +2,17 @@ version: '3.8'
 
 services:
 
-  JAQpApi:
-    image: 'jaqp_api:latest'
-    build:
-     context: ./JAQpApi
-    container_name: JAQp-api
-    depends_on:
-      - JAQp-db
-      - JAQp-minio
-      - JAQp-Garnet
-    ports:
-      - 8080:8080  
+#  JAQpApi:
+#    image: 'jaqp_api:latest'
+#    build:
+#     context: ./JAQpApi
+#    container_name: JAQp-api
+#    depends_on:
+#      - JAQp-db
+#      - JAQp-minio
+#      - JAQp-Garnet
+#    ports:
+#      - 8080:8080  
   
   JAQp-db:
     image: 'postgres:latest'
@@ -51,8 +51,56 @@ services:
     # network_mode: "host"
     volumes:
       - cache:/data
+
+
+  JAQp-elastic:
+    image: elasticsearch:8.10.4
+    container_name: JAQp-elastic
+    ulimits:
+      memlock: -1  
+    environment:
+      - discovery.type=single-node
+      - node.name=JAQp-elastic
+      - discovery.seed_hosts=JAQp-elastic
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9600:9600"
+  JAQp-kibana:
+    image: kibana:8.10.4
+    container_name: JAQp-kibana
+    ports:
+       - "5601:5601"
+    expose:
+      - "5601"
+    environment:
+      ELASTICSEARCH_URL: http://JAQp-elastic:9200
+      ELASTICSEARCH_HOSTS: http://JAQp-elastic:9200
+      
+  JAQp-logstash:
+    user: root
+    image: logstash:8.10.4
+    container_name: JAQp-logstash    
+    ports:
+      - "5044:5044"
+    depends_on:
+      - JAQp-db
+      - JAQp-elastic
+    environment:
+      - PIPELINE_WORKERS=1
+      - PIPELINE_BATCH_SIZE=125
+      - PIPELINE_BATCH_DELAY=50
+    volumes:
+      - ./conf/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - logstash_data:/usr/share/logstash/data
+      - ./conf/postgresql-42.6.0.jar:/usr/share/logstash/postgresql-42.6.0.jar
 volumes:
   cache:
   pg-data:
   minio-data:
-  
+  elasticsearch_data:
+  logstash_data:
