@@ -37,7 +37,6 @@ public class UserService
         return userRepository.findById(_id).orElseThrow(() -> new NotFoundException("user", "id", _id.toString()));
     }
 
-
     @Cacheable(value = "UserService:GetUserGeneralByID", key = "#_id")
     public UserGeneralResponse GetUserGeneralInfo(int _id) throws NotFoundException
     {

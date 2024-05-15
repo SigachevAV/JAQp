@@ -11,7 +11,9 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class UserResultsData
 {
+
     private Float result;
     private Timestamp createdAt;
     private QuizData quizData;
+
 }

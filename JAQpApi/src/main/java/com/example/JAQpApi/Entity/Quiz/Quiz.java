@@ -26,7 +26,9 @@ public class Quiz
     private Integer id;
 
     @Column(nullable = false)
+
     @GenericField
+
     private Boolean isPublic;
 
     @Column(nullable = true)
@@ -47,6 +49,7 @@ public class Quiz
 
     @OneToMany(mappedBy = "quiz")
     private List<Question> questions;
+
 
     @ManyToMany
     @IndexedEmbedded

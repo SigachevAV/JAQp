@@ -12,9 +12,11 @@ import com.example.JAQpApi.Exceptions.NotFoundException;
 import com.example.JAQpApi.Repository.ImageMetadataRepo;
 import com.example.JAQpApi.Repository.QuizRepo;
 import com.example.JAQpApi.Repository.TagRepo;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -56,6 +58,7 @@ public class QuizService
                 .isPublic(_quiz.getIsPublic())
                 .build();
     }
+
 
     @CacheEvict(value = "QuizService::GetOwnedById", key = "#_id")
     private void CacheEvicted(Integer _id)
@@ -146,6 +149,7 @@ public class QuizService
         }
         return new OwnedQuizListResponse(list);
     }
+
 
     @Cacheable(value = "QuizService::GetQuestions", key = "#_id")
     public QuestionsOfQuizResponse GetQuestionsOfQuiz(Integer _id) throws NotFoundException
