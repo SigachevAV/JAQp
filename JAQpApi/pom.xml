@@ -14,7 +14,6 @@
     <name>JAQpApi</name>
     <description>JAQp rest api</description>
     <properties>
-        <elasticsearch.version>8.10.4</elasticsearch.version>
         <java.version>17</java.version>
     </properties>
     <dependencies>
@@ -52,10 +51,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
             <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-elasticsearch</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>

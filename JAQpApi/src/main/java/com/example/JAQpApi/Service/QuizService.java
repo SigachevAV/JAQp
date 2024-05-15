@@ -184,7 +184,7 @@ public class QuizService
         Quiz quiz = ValidateAccessAndGetQuiz(_token, _id).orElseThrow(() -> new NotFoundException("Quiz", "id", _id.toString()));
         quiz.setDescription(_description);
         quiz.setName(_name);
-        quiz.setTags((List<Tag>) tagRepo.findAllById(_tags));
+        quiz.setTags((List<Tag>) tagRepo.findAllById((_tags == null) ? new ArrayList<>() : _tags));
         return quiz;
     }
 

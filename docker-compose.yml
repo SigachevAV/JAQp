@@ -2,17 +2,18 @@ version: '3.8'
 
 services:
 
-#  JAQpApi:
-#    image: 'jaqp_api:latest'
-#    build:
-#     context: ./JAQpApi
-#    container_name: JAQp-api
-#    depends_on:
-#      - JAQp-db
-#      - JAQp-minio
-#      - JAQp-Garnet
-#    ports:
-#      - 8080:8080  
+  JAQpApi:
+    image: 'jaqp_api:latest'
+    build:
+     context: ./JAQpApi
+    container_name: JAQp-api
+    depends_on:
+      - JAQp-db
+      - JAQp-minio
+      - JAQp-Garnet
+      - JAQp-elastic
+    ports:
+      - 8080:8080  
   
   JAQp-db:
     image: 'postgres:latest'
