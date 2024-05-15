@@ -55,6 +55,7 @@ public class UserService
         User user = CheckAndGetUser(_id, _token);
         user.setFirstName(_request.getFirstName());
         user.setSecondName(_request.getSecondName());
+        user.setLastName(_request.getLastName());
         user.setBirthDate(_request.getBirthDate());
         userRepository.save(user);
     }

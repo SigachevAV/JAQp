@@ -4,7 +4,6 @@ import com.example.JAQpApi.DTO.UserResultsData;
 import com.example.JAQpApi.DTO.UserResultsResponse;
 import com.example.JAQpApi.Entity.Quiz.Answer;
 import com.example.JAQpApi.Entity.Quiz.Quiz;
-import com.example.JAQpApi.Entity.Quiz.QuizIndex;
 import com.example.JAQpApi.Entity.User.User;
 import com.example.JAQpApi.Entity.UserAnswer;
 import com.example.JAQpApi.Entity.UserResult;
@@ -29,12 +28,12 @@ public class UserResultService
     private final UserRepo userRepo;
     private final AuthService authService;
 
-    private final QuizIndexRepo quizIndexRepo;
+
 
 
     public void MakeAnswer(Integer _id, String _token) throws NotFoundException
     {
-        List<QuizIndex> list = quizIndexRepo.findAllByName("quiz");
+
         User user = null;
         if(_token != null)
         {

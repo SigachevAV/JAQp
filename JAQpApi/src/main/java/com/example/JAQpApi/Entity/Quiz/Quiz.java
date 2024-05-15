@@ -5,6 +5,7 @@ import com.example.JAQpApi.Entity.UserResult;
 import jakarta.persistence.*;
 import lombok.*;
 import org.checkerframework.common.aliasing.qual.Unique;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Indexed(index = "quiz_index")
 public class Quiz
 {
     @Column(nullable = false)
@@ -24,12 +26,15 @@ public class Quiz
     private Integer id;
 
     @Column(nullable = false)
+    @GenericField
     private Boolean isPublic;
 
     @Column(nullable = true)
+    @FullTextField
     private String name;
 
     @Column(nullable = true)
+    @FullTextField
     private String description;
 
     @ManyToOne
@@ -44,6 +49,7 @@ public class Quiz
     private List<Question> questions;
 
     @ManyToMany
+    @IndexedEmbedded
     private List<Tag> tags;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)

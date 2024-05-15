@@ -14,6 +14,7 @@ import com.example.JAQpApi.Repository.QuizRepo;
 import com.example.JAQpApi.Repository.TagRepo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -160,7 +161,10 @@ public class QuizService
     }
 
 
-    @CacheEvict(value = "QuizService::GetById", key = "#_id")
+    @Caching(evict = {
+            @CacheEvict(value = "QuizService::GetById", key = "#_id"),
+            @CacheEvict(value = "QuizService::GetOwnedByToken", key = "#_token")
+    })
     public void DeleteQuiz(String _token, Integer _id) throws AccessDeniedException, NotFoundException, ImageException
     {
         Quiz quiz = ValidateAccessAndGetQuiz(_token, _id).orElseThrow(() -> new NotFoundException("Quiz", "id", _id.toString()));
@@ -184,8 +188,10 @@ public class QuizService
         return quiz;
     }
 
-    @CacheEvict(value = "QuizService::GetById", key = "#_id")
-    public QuizResponse ChangeQuiz(String _token, QuizCreateRequest _request, Integer _id) throws AccessDeniedException, NotFoundException, ImageException
+    @Caching(evict = {
+            @CacheEvict(value = "QuizService::GetById", key = "#_id"),
+            @CacheEvict(value = "QuizService::GetOwnedByToken", key = "#_token")
+    })public QuizResponse ChangeQuiz(String _token, QuizCreateRequest _request, Integer _id) throws AccessDeniedException, NotFoundException, ImageException
     {
         Quiz quiz = ChangeQuiz(_token, _id, _request.getName(), _request.getDescription(), _request.getTags());
         ImageMetadata imageMetadata = quiz.getThumbnail();
@@ -194,23 +200,31 @@ public class QuizService
         imageMetadata = imageService.ChangeImage(imageMetadata, _token, _request.getThumbnail());
         quiz.setThumbnail(imageMetadata);
         quizRepo.save(quiz);
+        CacheEvicted(quiz.getOwner().getId());
         return QuizResponseFactory(quiz);
     }
 
-    @CacheEvict(value = "QuizService::GetById", key = "#_id")
-    public QuizResponse ChangeQuiz(String _token, QuizChangeRequest _request, Integer _id) throws AccessDeniedException, NotFoundException
+    @Caching(evict = {
+            @CacheEvict(value = "QuizService::GetById", key = "#_id"),
+            @CacheEvict(value = "QuizService::GetOwnedByToken", key = "#_token")
+    })public QuizResponse ChangeQuiz(String _token, QuizChangeRequest _request, Integer _id) throws AccessDeniedException, NotFoundException
     {
         Quiz quiz = ChangeQuiz(_token, _id, _request.getName(), _request.getDescription(), _request.getTags());
         quizRepo.save(quiz);
+        CacheEvicted(quiz.getOwner().getId());
         return QuizResponseFactory(quiz);
     }
 
-    @CacheEvict(value = "QuizService::GetById", key = "#_id")
+    @Caching(evict = {
+            @CacheEvict(value = "QuizService::GetById", key = "#_id"),
+            @CacheEvict(value = "QuizService::GetOwnedByToken", key = "#_token")
+    })
     public QuizResponse TogglePublic(String _token, Integer _id) throws AccessDeniedException, NotFoundException
     {
         Quiz quiz = ValidateAccessAndGetQuiz(_token, _id).orElseThrow(() -> new NotFoundException("Quiz", "id", _id.toString()));
         quiz.setIsPublic(!quiz.getIsPublic());
         quizRepo.save(quiz);
+        CacheEvicted(quiz.getOwner().getId());
         return QuizResponseFactory(quiz);
     }
 }

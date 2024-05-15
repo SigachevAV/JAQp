@@ -16,6 +16,7 @@ import java.util.List;
 public class TagService
 {
     private TagRepo tagRepo;
+    private final SearchService searchService;
 
     public void InitTags()
     {

@@ -19,6 +19,8 @@ public class UserChangeDataRequest
     private String firstName;
     @Schema ( example = "Ivanov")
     private String secondName;
+
+    private String lastName;
     @Schema ( example = "1999.9.9")
     private OffsetDateTime birthDate;
 }
