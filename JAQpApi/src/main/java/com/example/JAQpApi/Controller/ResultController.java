@@ -1,7 +1,6 @@
 package com.example.JAQpApi.Controller;
 
 
-import com.example.JAQpApi.DTO.QuizResultRequest;
 import com.example.JAQpApi.DTO.UserResultsResponse;
 import com.example.JAQpApi.Exceptions.NotFoundException;
 import com.example.JAQpApi.Service.UserResultService;
@@ -26,9 +25,9 @@ public class ResultController
     }
 
     @GetMapping("/result")
-    public ResponseEntity MakeResult(@RequestHeader @Nullable String Authorization, @ModelAttribute QuizResultRequest request) throws NotFoundException
+    public ResponseEntity MakeResult(@RequestHeader @Nullable String Authorization, @RequestParam Integer id, @RequestParam Float result) throws NotFoundException
     {
-        userResultService.MakeResult(request.getId(), request.getResult(), Authorization);
+        userResultService.MakeResult(id, result, Authorization);
         return ResponseEntity.ok().build();
     }
 
