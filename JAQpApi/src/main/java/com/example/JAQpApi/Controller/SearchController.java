@@ -5,6 +5,9 @@ import com.example.JAQpApi.Service.SearchService;
 import lombok.AllArgsConstructor;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
+import com.example.JAQpApi.DTO.SearchRequest;
+import com.example.JAQpApi.Service.SearchService;
+import lombok.AllArgsConstructor;
 
 @CrossOrigin(origins = "*")
 @AllArgsConstructor

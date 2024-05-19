@@ -16,6 +16,7 @@ import java.util.List;
 public class SearchService
 {
     private final EntityManager entityManager;
+
     private final int pageSize = 10;
     public OwnedQuizListResponse FindQuiz(String _text, String _tags, Integer _page)
     {
