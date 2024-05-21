@@ -2,6 +2,20 @@ version: '3.8'
 
 services:
 
+  JAQpFront:
+    image: 'jaqp_front:latest'
+    build:
+     context: ./JAQpFront
+    container_name: JAQp-front
+    deploy:
+      resources:
+        reservations:
+          memory: 256M
+    depends_on:
+      - JAQpApi
+    ports:
+      - 3000:3000  
+   
   JAQpApi:
     image: 'jaqp_api:latest'
     build:
@@ -18,7 +32,8 @@ services:
       - JAQp-elastic
     ports:
       - 8080:8080  
-  
+   
+ 
   JAQp-db:
     image: 'postgres:latest'
     container_name: JAQp-db
@@ -121,11 +136,11 @@ services:
       - PIPELINE_WORKERS=1
       - PIPELINE_BATCH_SIZE=125
       - PIPELINE_BATCH_DELAY=50
+      - "ES_JAVA_OPTS=-Xms128m -Xmx128m"
     volumes:
       - ./conf/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
       - logstash_data:/usr/share/logstash/data
       - ./conf/postgresql-42.6.0.jar:/usr/share/logstash/postgresql-42.6.0.jar
-      - "ES_JAVA_OPTS=-Xms128m -Xmx128m"
 volumes:
   cache:
   pg-data:
