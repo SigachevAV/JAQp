@@ -146,7 +146,7 @@ CREATE TABLE public.users (
     first_name character varying,
     second_name character varying,
     last_name character varying,
-    burth_date date
+    birth_date date
 );
 
 

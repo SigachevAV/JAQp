@@ -1,0 +1,388 @@
+{
+	"info": {
+		"_postman_id": "73424437-29b9-47de-bb44-120721db077d",
+		"name": "JAQpAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24823938"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "settings",
+					"item": [
+						{
+							"name": "SetfirstName",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYW1lMiIsImlhdCI6MTcwNTU0MTE3NSwiZXhwIjoxNzA1NTQyNjE1fQ.0WTygePV-oOPM29iiGbhQMP2SNIJ676i9pnmVfo7cvo",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/users/4/setting/first_name?first_name=Firstname",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"4",
+										"setting",
+										"first_name"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "EMEBLGZTF4SOJ7P421YA",
+											"disabled": true
+										},
+										{
+											"key": "first_name",
+											"value": "Firstname"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SetSecondName",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/users/1/setting/second_name?token=EMEBLGZTF4SOJ7P421YA&second_name=sname",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users",
+										"1",
+										"setting",
+										"second_name"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "EMEBLGZTF4SOJ7P421YA"
+										},
+										{
+											"key": "second_name",
+											"value": "sname"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SetLastName",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/users/1/setting/last_name?token=EMEBLGZTF4SOJ7P421YA&last_name=lname",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users",
+										"1",
+										"setting",
+										"last_name"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "EMEBLGZTF4SOJ7P421YA"
+										},
+										{
+											"key": "last_name",
+											"value": "lname"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SetBirthDate",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/users/1/setting/birth_date?token=EMEBLGZTF4SOJ7P421YA&birth_date=2023-12-22T00:00:00.0Z",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users",
+										"1",
+										"setting",
+										"birth_date"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "EMEBLGZTF4SOJ7P421YA"
+										},
+										{
+											"key": "birth_date",
+											"value": "2023-12-22T00:00:00.0Z"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GetUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYW1lMiIsImlhdCI6MTcwNTY5NTc1NiwiZXhwIjoxNzA1Njk3MTk2fQ.kWo-eOKUNr3oC-k6YyP0XsBEP43MrUMGcrWV-rg2Ibk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/users/4",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"username\": \"name2\",\n        \"password\": \"pass\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/auth/authenticate",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \n        \"username\": \"name2\",\n        \"password\": \"pass\"\n\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/auth/register",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "payload",
+									"value": "{\n    \"jwtToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYW1lMiIsImlhdCI6MTcwNTQyNzg0NSwiZXhwIjoxNzA1NDI5Mjg1fQ.Nr2AWVf-oj9HJNM_XdQw1Ni-J6_IWYljId5LrhI6ZBg\"\n}",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/auth",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "image",
+			"item": [
+				{
+					"name": "Save",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYW1lMiIsImlhdCI6MTcwNTcwMjg0NCwiZXhwIjoxNzA1NzA0Mjg0fQ.vXcaGaMIn-Z0ekpsUj1zbLg2YconDXRRizo9ULgAiE4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/kotdepress/Downloads/Пупсек.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/api/image/upload",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"image",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYW1lMiIsImlhdCI6MTcwNTcwMDMwMCwiZXhwIjoxNzA1NzAxNzQwfQ.kNT7qYzerCunXm8iEOCRNPP5JNd5mAPuEB5D74oD_HU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/image/0d545deb-a231-4135-969f-405832a706b1.png",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"image",
+								"0d545deb-a231-4135-969f-405832a706b1.png"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
